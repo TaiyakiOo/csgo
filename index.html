@@ -12,7 +12,7 @@
             --gold: #eebc51;
             --red: #d32f2f;
             --text: #e0e0e0;
-            --card-w: 90px; /* 手机端稍微调小一点以免拥挤 */
+            --card-w: 90px;
             --card-h: 110px;
         }
 
@@ -74,7 +74,6 @@
         .item {
             width: var(--card-w); height: var(--card-h);
             background: linear-gradient(135deg, #2b2b2b, #1a1a1a);
-            /* 底部边框颜色现在由 JS 动态控制 */
             border-bottom: 4px solid #fff; 
             margin: 0 3px; flex-shrink: 0;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -112,15 +111,12 @@
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 200;
             flex-direction: column; align-items: center; justify-content: center;
-            padding: 20px; box-sizing: border-box; /* 确保内边距不撑大 */
+            padding: 20px; box-sizing: border-box; 
         }
         .info-box {
             background: #222; border: 1px solid #444; 
             padding: 20px; border-radius: 8px;
-            width: 90%; /* 手机端占90%宽度 */
-            max-width: 400px; /* 电脑端不超宽 */
-            max-height: 80vh; /* 防止内容太长超出屏幕 */
-            overflow-y: auto; /* 内容太长可滚动 */
+            width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto;
             color: #ccc; font-size: 14px; line-height: 1.6;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
@@ -163,21 +159,21 @@
         </div>
     </div>
 
-    <!-- 公平性说明弹窗 (文案已更新) -->
+    <!-- 公平性说明弹窗 (已更新为内部随机算法文案) -->
     <div class="info-modal" id="infoModal">
         <div class="info-box">
             <div class="info-title">🛡️ 随机算法与公平性声明</div>
             
             <p>1. <b>核心算法：</b>
-            本系统的淘汰逻辑基于浏览器内核的高精度 <b>Math.random()</b> 随机数生成器。该算法独立运行，不受任何外部因素干扰。</p>
+            本系统的淘汰逻辑基于浏览器内核的高精度 <b>Math.random()</b> 随机数生成器。该算法独立运行，不受任何外部因素（如充值金额、账号等级）干扰。</p>
             
             <p>2. <b>概率均等：</b>
             在5人死斗模式中，每位玩家初始胜率严格相等（20%）。每一轮淘汰都是一次独立的随机事件，系统并在毫秒级时间内计算出最终幸存者。</p>
             
             <p>3. <b>数据存证：</b>
-            每次计算生成的“淘汰序列”会立即生成唯一的 Hash 记录并上传至开源代码库。这意味着一旦结果生成，包括管理员在内的任何人均无法进行二次修改或撤回。</p>
+            每次计算生成的“淘汰序列”会立即生成唯一的 Hash 记录并上传至代码库。这意味着一旦结果生成，包括管理员在内的任何人均无法进行二次修改或撤回。</p>
             
-            <p>4. <b>身份绑定：</b>
+            <p>4. <b>身份绑定 (稀有度)：</b>
             <br><span style="color:#5e98d9">■ 1号位 (工业级)</span> 
             <span style="color:#4b69ff">■ 2号位 (军规级)</span><br>
             <span style="color:#8847ff">■ 3号位 (受限级)</span>
@@ -191,17 +187,12 @@
 
     <script>
         // --- 1. CS:GO 稀有度颜色定义 ---
-        // 0: 工业级 (浅蓝)
-        // 1: 军规级 (深蓝)
-        // 2: 受限级 (紫)
-        // 3: 保密级 (粉)
-        // 4: 隐秘级 (红)
         const rarityColors = [
-            '#5e98d9', // Industrial
-            '#4b69ff', // Mil-Spec
-            '#8847ff', // Restricted
-            '#d32ce6', // Classified
-            '#eb4b4b'  // Covert
+            '#5e98d9', // 工业 (玩家1)
+            '#4b69ff', // 军规 (玩家2)
+            '#8847ff', // 受限 (玩家3)
+            '#d32ce6', // 保密 (玩家4)
+            '#eb4b4b'  // 隐秘 (玩家5)
         ];
 
         // --- 2. 音效合成器 ---
@@ -241,14 +232,14 @@
         
         if (typeof gameHistory !== 'undefined') {
             gameHistory.reverse().forEach(game => {
-                const seedText = game.seed ? `Template ID: ${game.seed}` : "Seed: Verified";
+                const seedText = game.seed ? `Seed: ${game.seed}` : "Seed: Internal Random";
                 const div = document.createElement('div');
                 div.className = 'match-card';
                 div.onclick = () => { playReplay(game); };
                 div.innerHTML = `
                     <div>
                         <div class="info">${game.id} <span style="font-size:10px;color:#666;font-weight:normal;margin-left:5px">5人局</span></div>
-                        <div class="seed-info">🔑 ${seedText}</div>
+                        <div class="seed-info">🎲 ${seedText}</div>
                     </div>
                     <div class="w-name">👑 ${game.players[game.winnerIdx]}</div>
                 `;
@@ -263,7 +254,6 @@
             document.getElementById('winnerArea').style.display = 'none';
             document.querySelector('.case-container').style.display = 'block';
             
-            // 初始化：生成 0-4 的索引，代表5个玩家
             const initialAlive = game.players.map((_, i) => i);
             runRound(game, 0, initialAlive);
         }
@@ -285,7 +275,7 @@
             // 生成滚动条
             const LANDING_INDEX = 35; 
             const TOTAL_CARDS = 50;
-            const CARD_WIDTH = 96; // 90px + 6px margin
+            const CARD_WIDTH = 96; 
             
             strip.innerHTML = '';
             strip.style.transition = 'none';
@@ -295,14 +285,9 @@
                 const item = document.createElement('div');
                 item.className = 'item';
                 
-                // 决定这个格子放哪个玩家
-                // 如果是 LANDING_INDEX，必须放倒霉蛋
-                // 否则随机放一个活着的玩家
                 let pIndex = (i === LANDING_INDEX) ? victimIdx : aliveIndices[Math.floor(Math.random() * aliveIndices.length)];
                 
-                // --- 关键：根据玩家的原始索引 (pIndex) 分配固定颜色 ---
-                // 玩家0永远是颜色0，玩家1永远是颜色1，以此类推
-                // 使用 % 5 防止数组越界（虽然5人局不会越界）
+                // 固定颜色逻辑
                 const myColor = rarityColors[pIndex % 5];
                 item.style.borderBottomColor = myColor;
 
@@ -317,7 +302,6 @@
 
             await wait(100);
 
-            // 滚动
             const randomOffset = Math.floor(Math.random() * 50) - 25;
             const targetX = -(LANDING_INDEX * CARD_WIDTH) - (CARD_WIDTH / 2) + randomOffset;
             const duration = 4000;
@@ -339,7 +323,6 @@
 
             await wait(duration);
 
-            // 处决
             const target = document.getElementById('target');
             target.classList.add('eliminated');
             playThudSound();
@@ -352,7 +335,6 @@
             await wait(1500);
             document.getElementById('gameModal').style.animation = ''; 
 
-            // 下一轮
             runRound(game, roundIndex + 1, aliveIndices.filter(i => i !== victimIdx));
         }
 
@@ -376,4 +358,3 @@
     </script>
 </body>
 </html>
-
