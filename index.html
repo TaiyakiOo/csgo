@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CS:GO 饰品大逃杀 | 5人死斗模式</title>
+    <title>CS:GO 饰品大逃杀 | 5人死斗</title>
     <script src="data.js"></script>
     <style>
-        /* --- 样式部分 --- */
+        /* --- 核心样式 --- */
         :root {
             --bg: #141414;
             --gold: #eebc51;
             --red: #d32f2f;
             --text: #e0e0e0;
-            --card-w: 100px;
-            --card-h: 120px;
+            --card-w: 90px; /* 手机端稍微调小一点以免拥挤 */
+            --card-h: 110px;
         }
 
         body {
@@ -24,16 +24,17 @@
             margin: 0; padding: 20px;
             display: flex; flex-direction: column; align-items: center;
             min-height: 100vh; overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .header { text-align: center; margin-bottom: 20px; }
+        .header { text-align: center; margin-bottom: 20px; width: 100%;}
         h1 {
-            margin: 0; font-size: 26px; font-style: italic; text-transform: uppercase;
+            margin: 0; font-size: 24px; font-style: italic; text-transform: uppercase;
             background: linear-gradient(180deg, #fff 0%, #bbb 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
-        .subtitle { color: var(--gold); font-size: 12px; letter-spacing: 2px; margin-top: 5px; opacity: 0.8; }
+        .subtitle { color: var(--gold); font-size: 11px; letter-spacing: 2px; margin-top: 5px; opacity: 0.8; }
 
         /* 列表 */
         .history-list { width: 100%; max-width: 500px; padding-bottom: 100px; }
@@ -41,26 +42,27 @@
             background: rgba(30, 30, 30, 0.6); border: 1px solid #333; border-left: 3px solid #555;
             margin-bottom: 10px; padding: 15px; display: flex; justify-content: space-between;
             align-items: center; cursor: pointer; transition: 0.2s;
+            border-radius: 4px;
         }
         .match-card:active { transform: scale(0.98); background: #252525; }
         .match-card .info { font-size: 14px; color: #fff; font-weight: bold; }
-        .match-card .seed-info { font-size: 10px; color: #666; margin-top: 4px; font-family: monospace;}
-        .w-name { color: var(--gold); font-weight: bold; }
+        .match-card .seed-info { font-size: 10px; color: #666; margin-top: 4px; font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;}
+        .w-name { color: var(--gold); font-weight: bold; font-size: 14px;}
 
-        /* 弹窗通用 */
+        /* 游戏弹窗 */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 100;
             flex-direction: column; align-items: center; justify-content: center;
         }
 
-        /* 游戏界面 */
-        .status-bar { text-align: center; margin-bottom: 20px; }
-        .action-text { font-size: 24px; font-weight: bold; color: #fff; }
+        .status-bar { text-align: center; margin-bottom: 20px; width: 100%; }
+        .action-text { font-size: 20px; font-weight: bold; color: #fff; }
+        
         .case-container {
-            width: 100%; height: 160px; background: #0b0b0b; position: relative;
+            width: 100%; height: 150px; background: #0b0b0b; position: relative;
             border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold);
-            margin-bottom: 40px; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            margin-bottom: 30px; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8);
         }
         .pointer {
             position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--gold);
@@ -68,21 +70,24 @@
         }
         .strip { display: flex; height: 100%; align-items: center; position: absolute; left: 50%; will-change: transform; }
 
+        /* 卡片样式 */
         .item {
             width: var(--card-w); height: var(--card-h);
             background: linear-gradient(135deg, #2b2b2b, #1a1a1a);
-            border-bottom: 4px solid #8847ff; margin: 0 4px; flex-shrink: 0;
+            /* 底部边框颜色现在由 JS 动态控制 */
+            border-bottom: 4px solid #fff; 
+            margin: 0 3px; flex-shrink: 0;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             position: relative; box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
         }
-        .item.eliminated { filter: grayscale(100%) brightness(0.4); background: #220505; border-bottom-color: var(--red); }
+        .item.eliminated { filter: grayscale(100%) brightness(0.4); background: #220505; border-bottom-color: var(--red) !important; }
         .item.eliminated .skull { opacity: 1; transform: scale(1.4); }
-        .avatar { font-size: 30px; margin-bottom: 8px; }
-        .name { font-size: 12px; color: #aaa; text-align: center; width: 90%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-        .skull { position: absolute; font-size: 40px; opacity: 0; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .avatar { font-size: 28px; margin-bottom: 5px; }
+        .name { font-size: 11px; color: #ddd; text-align: center; width: 95%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 500;}
+        .skull { position: absolute; font-size: 36px; opacity: 0; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
         /* 胜利界面 */
-        .winner-modal { display: none; flex-direction: column; align-items: center; animation: zoomIn 0.4s; }
+        .winner-modal { display: none; flex-direction: column; align-items: center; animation: zoomIn 0.4s; width: 100%; }
         .win-card {
             width: 160px; height: 220px;
             background: radial-gradient(circle, #4a3b18 0%, #1a1a1a 100%);
@@ -95,23 +100,29 @@
             padding: 10px 30px; border-radius: 30px; cursor: pointer;
             transition: 0.2s; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
         }
-        .btn:hover { border-color: #fff; color: #fff; }
+        .btn:active { background: #333; color: #fff; }
 
-        /* 公平性声明按钮 */
+        /* --- 公平性声明 (修复手机显示不全) --- */
         .fairness-btn {
             position: fixed; bottom: 20px; font-size: 12px; color: #666;
-            cursor: pointer; text-decoration: underline; z-index: 50;
+            cursor: pointer; text-decoration: underline; z-index: 50; padding: 10px;
         }
         
-        /* 公平性弹窗 */
         .info-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 200;
-            flex-direction: column; align-items: center; justify-content: center; padding: 30px;
+            background: rgba(0,0,0,0.95); z-index: 200;
+            flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; box-sizing: border-box; /* 确保内边距不撑大 */
         }
         .info-box {
-            background: #222; border: 1px solid #444; padding: 20px; border-radius: 8px;
-            max-width: 400px; color: #ccc; font-size: 14px; line-height: 1.6;
+            background: #222; border: 1px solid #444; 
+            padding: 20px; border-radius: 8px;
+            width: 90%; /* 手机端占90%宽度 */
+            max-width: 400px; /* 电脑端不超宽 */
+            max-height: 80vh; /* 防止内容太长超出屏幕 */
+            overflow-y: auto; /* 内容太长可滚动 */
+            color: #ccc; font-size: 14px; line-height: 1.6;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .info-title { color: var(--gold); font-size: 18px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #444; padding-bottom: 10px;}
 
@@ -128,7 +139,7 @@
 
     <div class="history-list" id="listArea"></div>
 
-    <div class="fairness-btn" onclick="showInfo()">⚖️ 算法公平性与随机性声明</div>
+    <div class="fairness-btn" onclick="showInfo()">⚖️ 算法公平性声明</div>
 
     <!-- 游戏弹窗 -->
     <div class="modal" id="gameModal">
@@ -145,26 +156,47 @@
         <div class="winner-modal" id="winnerArea">
             <div class="win-card">
                 <div style="font-size:50px; margin-bottom:10px">👑</div>
-                <div style="color:var(--gold); font-size:18px; font-weight:bold" id="winName">玩家名</div>
+                <div style="color:var(--gold); font-size:18px; font-weight:bold; padding: 0 10px; text-align: center;" id="winName">玩家名</div>
                 <div style="color:#666; font-size:12px; margin-top:5px">最终幸存者</div>
             </div>
             <button class="btn" onclick="closeModal()">关闭回放</button>
         </div>
     </div>
 
-    <!-- 公平性说明弹窗 -->
+    <!-- 公平性说明弹窗 (修复手机显示) -->
     <div class="info-modal" id="infoModal">
         <div class="info-box">
-            <div class="info-title">🛡️ 公平性与算法声明</div>
-            <p>1. <b>绝对随机：</b>本平台所有淘汰序列均基于 CS:GO 饰品官方生成的 <b>Template ID (模板编号)</b> 极其复杂的随机算法计算得出。</p>
-            <p>2. <b>无法篡改：</b>开奖依据（Template ID）由 V社（Valve）服务器生成，任何人都无法提前预知或修改。</p>
-            <p>3. <b>透明公开：</b>每一期回放均公开开奖依据（Seed），用户可自行核对。</p>
-            <button class="btn" style="width:100%; margin-top:20px" onclick="closeInfo()">我明白了</button>
+            <div class="info-title">🛡️ 随机算法与公平性</div>
+            <p>1. <b>机制透明：</b>本模式为“大逃杀”淘汰制，每局由5名玩家参与，通过4轮淘汰决出1名胜者。</p>
+            <p>2. <b>绝对随机：</b>淘汰序列基于官方生成的 <b>Template ID (饰品模板编号)</b> 计算。该编号由 Valve 服务器生成，具有不可预测性。</p>
+            <p>3. <b>身份绑定：</b>每位玩家在当期对应唯一的 CS:GO 稀有度颜色：
+                <br><span style="color:#5e98d9">■ 工业级</span> 
+                <span style="color:#4b69ff">■ 军规级</span> 
+                <span style="color:#8847ff">■ 受限级</span><br>
+                <span style="color:#d32ce6">■ 保密级</span> 
+                <span style="color:#eb4b4b">■ 隐秘级</span>
+            </p>
+            <p>4. <b>验证方式：</b>点击列表中的记录可查看当期 Seed (开奖依据)，确保无人为干预。</p>
+            <button class="btn" style="width:100%; margin-top:20px; border-color:#555" onclick="closeInfo()">我明白了</button>
         </div>
     </div>
 
     <script>
-        // --- 音效合成器 (保持不变) ---
+        // --- 1. CS:GO 稀有度颜色定义 ---
+        // 0: 工业级 (浅蓝)
+        // 1: 军规级 (深蓝)
+        // 2: 受限级 (紫)
+        // 3: 保密级 (粉)
+        // 4: 隐秘级 (红)
+        const rarityColors = [
+            '#5e98d9', // Industrial
+            '#4b69ff', // Mil-Spec
+            '#8847ff', // Restricted
+            '#d32ce6', // Classified
+            '#eb4b4b'  // Covert
+        ];
+
+        // --- 2. 音效合成器 ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playClickSound() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -195,21 +227,19 @@
             });
         }
 
-        // --- 逻辑部分 ---
+        // --- 3. 业务逻辑 ---
         const listArea = document.getElementById('listArea');
         const strip = document.getElementById('strip');
         
         if (typeof gameHistory !== 'undefined') {
             gameHistory.reverse().forEach(game => {
-                // 兼容旧数据，如果没有 seed 就显示默认文本
                 const seedText = game.seed ? `Template ID: ${game.seed}` : "Seed: Verified";
-                
                 const div = document.createElement('div');
                 div.className = 'match-card';
                 div.onclick = () => { playReplay(game); };
                 div.innerHTML = `
                     <div>
-                        <div class="info">${game.id} <span style="font-size:10px;color:#666;font-weight:normal;margin-left:5px">${game.players.length}人局</span></div>
+                        <div class="info">${game.id} <span style="font-size:10px;color:#666;font-weight:normal;margin-left:5px">5人局</span></div>
                         <div class="seed-info">🔑 ${seedText}</div>
                     </div>
                     <div class="w-name">👑 ${game.players[game.winnerIdx]}</div>
@@ -217,7 +247,7 @@
                 listArea.appendChild(div);
             });
         } else {
-            listArea.innerHTML = '<div style="text-align:center; padding:30px; color:#555">等待数据更新...</div>';
+            listArea.innerHTML = '<div style="text-align:center; padding:30px; color:#555">暂无数据</div>';
         }
 
         function playReplay(game) {
@@ -225,13 +255,12 @@
             document.getElementById('winnerArea').style.display = 'none';
             document.querySelector('.case-container').style.display = 'block';
             
-            // 存活名单初始化：根据玩家数量自动生成 [0, 1, 2, 3, 4...]
+            // 初始化：生成 0-4 的索引，代表5个玩家
             const initialAlive = game.players.map((_, i) => i);
             runRound(game, 0, initialAlive);
         }
 
         async function runRound(game, roundIndex, aliveIndices) {
-            // 检查是否所有淘汰都结束了
             if (roundIndex >= game.outSequence.length) {
                 showWinner(game.players[game.winnerIdx]);
                 return;
@@ -245,10 +274,10 @@
             statusText.innerText = "ROLLING...";
             statusText.style.color = "#fff";
 
-            // 生成卡片
+            // 生成滚动条
             const LANDING_INDEX = 35; 
             const TOTAL_CARDS = 50;
-            const CARD_WIDTH = 108; 
+            const CARD_WIDTH = 96; // 90px + 6px margin
             
             strip.innerHTML = '';
             strip.style.transition = 'none';
@@ -257,9 +286,18 @@
             for (let i = 0; i < TOTAL_CARDS; i++) {
                 const item = document.createElement('div');
                 item.className = 'item';
-                // 确保只随机抽选“活着”的人
+                
+                // 决定这个格子放哪个玩家
+                // 如果是 LANDING_INDEX，必须放倒霉蛋
+                // 否则随机放一个活着的玩家
                 let pIndex = (i === LANDING_INDEX) ? victimIdx : aliveIndices[Math.floor(Math.random() * aliveIndices.length)];
                 
+                // --- 关键：根据玩家的原始索引 (pIndex) 分配固定颜色 ---
+                // 玩家0永远是颜色0，玩家1永远是颜色1，以此类推
+                // 使用 % 5 防止数组越界（虽然5人局不会越界）
+                const myColor = rarityColors[pIndex % 5];
+                item.style.borderBottomColor = myColor;
+
                 item.innerHTML = `
                     <div class="avatar">👤</div>
                     <div class="name">${game.players[pIndex]}</div>
@@ -271,14 +309,15 @@
 
             await wait(100);
 
+            // 滚动
             const randomOffset = Math.floor(Math.random() * 50) - 25;
             const targetX = -(LANDING_INDEX * CARD_WIDTH) - (CARD_WIDTH / 2) + randomOffset;
-            const duration = 4000; // 每轮时间稍微缩短一点，因为有4轮，太长了会无聊
+            const duration = 4000;
 
             strip.style.transition = `transform ${duration}ms cubic-bezier(0.15, 0, 0.2, 1)`;
             strip.style.transform = `translateX(${targetX}px)`;
 
-            // 声音逻辑
+            // 声音
             let currentDelay = 50; 
             let timeElapsed = 0;
             const tickLoop = () => {
@@ -302,7 +341,7 @@
             document.getElementById('gameModal').style.animation = 'flashRed 0.3s';
             if (navigator.vibrate) navigator.vibrate(300);
 
-            await wait(1500); // 稍微缩短等待时间
+            await wait(1500);
             document.getElementById('gameModal').style.animation = ''; 
 
             // 下一轮
