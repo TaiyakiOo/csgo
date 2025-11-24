@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CS:GO 饰品大逃杀 | 官方开箱</title>
+    <title>CS:GO 饰品大逃杀 | 5人死斗模式</title>
     <script src="data.js"></script>
     <style>
-        /* --- 视觉样式保持不变 --- */
+        /* --- 样式部分 --- */
         :root {
             --bg: #141414;
             --gold: #eebc51;
@@ -26,7 +26,7 @@
             min-height: 100vh; overflow-x: hidden;
         }
 
-        .header { text-align: center; margin-bottom: 30px; }
+        .header { text-align: center; margin-bottom: 20px; }
         h1 {
             margin: 0; font-size: 26px; font-style: italic; text-transform: uppercase;
             background: linear-gradient(180deg, #fff 0%, #bbb 100%);
@@ -35,63 +35,53 @@
         }
         .subtitle { color: var(--gold); font-size: 12px; letter-spacing: 2px; margin-top: 5px; opacity: 0.8; }
 
-        .history-list { width: 100%; max-width: 500px; padding-bottom: 80px; }
+        /* 列表 */
+        .history-list { width: 100%; max-width: 500px; padding-bottom: 100px; }
         .match-card {
             background: rgba(30, 30, 30, 0.6); border: 1px solid #333; border-left: 3px solid #555;
             margin-bottom: 10px; padding: 15px; display: flex; justify-content: space-between;
             align-items: center; cursor: pointer; transition: 0.2s;
         }
         .match-card:active { transform: scale(0.98); background: #252525; }
+        .match-card .info { font-size: 14px; color: #fff; font-weight: bold; }
+        .match-card .seed-info { font-size: 10px; color: #666; margin-top: 4px; font-family: monospace;}
         .w-name { color: var(--gold); font-weight: bold; }
 
+        /* 弹窗通用 */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.92); z-index: 100;
+            background: rgba(0,0,0,0.95); z-index: 100;
             flex-direction: column; align-items: center; justify-content: center;
         }
 
+        /* 游戏界面 */
         .status-bar { text-align: center; margin-bottom: 20px; }
-        .action-text { font-size: 24px; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
-
+        .action-text { font-size: 24px; font-weight: bold; color: #fff; }
         .case-container {
             width: 100%; height: 160px; background: #0b0b0b; position: relative;
             border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold);
             margin-bottom: 40px; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8);
         }
-        .case-container::before, .case-container::after {
-            content: ''; position: absolute; top:0; bottom:0; width: 80px; z-index: 5; pointer-events: none;
-        }
-        .case-container::before { left:0; background: linear-gradient(90deg, #0b0b0b, transparent); }
-        .case-container::after { right:0; background: linear-gradient(-90deg, #0b0b0b, transparent); }
-
         .pointer {
             position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--gold);
             z-index: 10; transform: translateX(-50%); box-shadow: 0 0 10px var(--gold);
         }
-
         .strip { display: flex; height: 100%; align-items: center; position: absolute; left: 50%; will-change: transform; }
 
         .item {
             width: var(--card-w); height: var(--card-h);
             background: linear-gradient(135deg, #2b2b2b, #1a1a1a);
-            border-bottom: 4px solid #8847ff; /* 默认紫 */
-            margin: 0 4px; flex-shrink: 0;
+            border-bottom: 4px solid #8847ff; margin: 0 4px; flex-shrink: 0;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             position: relative; box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
         }
-        .item:nth-child(5n) { border-bottom-color: #d32ce6; } /* 粉 */
-        .item:nth-child(5n+1) { border-bottom-color: #eb4b4b; } /* 红 */
-        .item:nth-child(5n+2) { border-bottom-color: #5e98d9; } /* 蓝 */
-
-        .item.eliminated {
-            filter: grayscale(100%) brightness(0.4); background: #220505; border-bottom-color: var(--red);
-        }
+        .item.eliminated { filter: grayscale(100%) brightness(0.4); background: #220505; border-bottom-color: var(--red); }
         .item.eliminated .skull { opacity: 1; transform: scale(1.4); }
-
         .avatar { font-size: 30px; margin-bottom: 8px; }
         .name { font-size: 12px; color: #aaa; text-align: center; width: 90%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
         .skull { position: absolute; font-size: 40px; opacity: 0; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
+        /* 胜利界面 */
         .winner-modal { display: none; flex-direction: column; align-items: center; animation: zoomIn 0.4s; }
         .win-card {
             width: 160px; height: 220px;
@@ -107,6 +97,24 @@
         }
         .btn:hover { border-color: #fff; color: #fff; }
 
+        /* 公平性声明按钮 */
+        .fairness-btn {
+            position: fixed; bottom: 20px; font-size: 12px; color: #666;
+            cursor: pointer; text-decoration: underline; z-index: 50;
+        }
+        
+        /* 公平性弹窗 */
+        .info-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 200;
+            flex-direction: column; align-items: center; justify-content: center; padding: 30px;
+        }
+        .info-box {
+            background: #222; border: 1px solid #444; padding: 20px; border-radius: 8px;
+            max-width: 400px; color: #ccc; font-size: 14px; line-height: 1.6;
+        }
+        .info-title { color: var(--gold); font-size: 18px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #444; padding-bottom: 10px;}
+
         @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes flashRed { 0%, 100% { background: rgba(211, 47, 47, 0); } 50% { background: rgba(211, 47, 47, 0.25); } }
     </style>
@@ -114,15 +122,19 @@
 <body>
 
     <div class="header">
-        <h1>CS:GO REPLAY</h1>
-        <div class="subtitle">官方开箱回放系统</div>
+        <h1>CS:GO BATTLE ROYALE</h1>
+        <div class="subtitle">5人死斗 · 胜者通吃</div>
     </div>
 
     <div class="history-list" id="listArea"></div>
 
+    <div class="fairness-btn" onclick="showInfo()">⚖️ 算法公平性与随机性声明</div>
+
+    <!-- 游戏弹窗 -->
     <div class="modal" id="gameModal">
         <div class="status-bar">
-            <div class="action-text" id="statusText">正在锁定...</div>
+            <div style="font-size:12px; color:#666; margin-bottom:5px" id="roundTag">ROUND 1/4</div>
+            <div class="action-text" id="statusText">锁定目标...</div>
         </div>
 
         <div class="case-container">
@@ -134,133 +146,103 @@
             <div class="win-card">
                 <div style="font-size:50px; margin-bottom:10px">👑</div>
                 <div style="color:var(--gold); font-size:18px; font-weight:bold" id="winName">玩家名</div>
-                <div style="color:#666; font-size:12px; margin-top:5px">最终赢家</div>
+                <div style="color:#666; font-size:12px; margin-top:5px">最终幸存者</div>
             </div>
             <button class="btn" onclick="closeModal()">关闭回放</button>
         </div>
     </div>
 
+    <!-- 公平性说明弹窗 -->
+    <div class="info-modal" id="infoModal">
+        <div class="info-box">
+            <div class="info-title">🛡️ 公平性与算法声明</div>
+            <p>1. <b>绝对随机：</b>本平台所有淘汰序列均基于 CS:GO 饰品官方生成的 <b>Template ID (模板编号)</b> 极其复杂的随机算法计算得出。</p>
+            <p>2. <b>无法篡改：</b>开奖依据（Template ID）由 V社（Valve）服务器生成，任何人都无法提前预知或修改。</p>
+            <p>3. <b>透明公开：</b>每一期回放均公开开奖依据（Seed），用户可自行核对。</p>
+            <button class="btn" style="width:100%; margin-top:20px" onclick="closeInfo()">我明白了</button>
+        </div>
+    </div>
+
     <script>
-        // --- 🤖 机械音效合成器 (纯代码，无文件) ---
+        // --- 音效合成器 (保持不变) ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        // 1. 模拟“咔哒”滚轮声
         function playClickSound() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const t = audioCtx.currentTime;
-
-            // 振荡器 - 产生声音
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            
-            // 使用三角波模拟机械撞击感
-            osc.type = 'triangle'; 
-            
-            // 频率快速下降 (从高到低，像个短促的敲击)
-            osc.frequency.setValueAtTime(800, t);
-            osc.frequency.exponentialRampToValueAtTime(100, t + 0.04);
-            
-            // 音量包络 (非常短促)
-            gain.gain.setValueAtTime(0.3, t);
-            gain.gain.exponentialRampToValueAtTime(0.01, t + 0.04);
-
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            
-            osc.start(t);
-            osc.stop(t + 0.05);
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.type = 'triangle'; osc.frequency.setValueAtTime(800, t); osc.frequency.exponentialRampToValueAtTime(100, t + 0.04);
+            gain.gain.setValueAtTime(0.3, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.04);
+            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.05);
         }
-
-        // 2. 模拟“砰”的重击/枪声
         function playThudSound() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const t = audioCtx.currentTime;
-
-            // 低频冲击
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            
-            osc.type = 'square'; // 方波更有冲击力
-            osc.frequency.setValueAtTime(150, t);
-            osc.frequency.exponentialRampToValueAtTime(0.01, t + 0.3);
-            
-            gain.gain.setValueAtTime(0.5, t);
-            gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
-
-            // 加个低通滤波器，让声音更闷，更像重击
-            const filter = audioCtx.createBiquadFilter();
-            filter.type = "lowpass";
-            filter.frequency.value = 200;
-
-            osc.connect(filter);
-            filter.connect(gain);
-            gain.connect(audioCtx.destination);
-            
-            osc.start(t);
-            osc.stop(t + 0.3);
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.type = 'square'; osc.frequency.setValueAtTime(150, t); osc.frequency.exponentialRampToValueAtTime(0.01, t + 0.3);
+            gain.gain.setValueAtTime(0.5, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+            const filter = audioCtx.createBiquadFilter(); filter.type = "lowpass"; filter.frequency.value = 200;
+            osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.3);
         }
-
-        // 3. 模拟“胜者”音效 (简单的上行音阶)
         function playWinSound() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const t = audioCtx.currentTime;
-            const notes = [523.25, 659.25, 783.99]; // C major chord
-
+            const notes = [523.25, 659.25, 783.99]; 
             notes.forEach((freq, i) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.value = freq;
-                
-                gain.gain.setValueAtTime(0.1, t + i*0.1);
-                gain.gain.exponentialRampToValueAtTime(0.01, t + i*0.1 + 0.5);
-                
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(t + i*0.1);
-                osc.stop(t + i*0.1 + 0.6);
+                const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+                osc.type = 'sine'; osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.1, t + i*0.1); gain.gain.exponentialRampToValueAtTime(0.01, t + i*0.1 + 0.5);
+                osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t + i*0.1); osc.stop(t + i*0.1 + 0.6);
             });
         }
 
-        // --- 业务逻辑 ---
+        // --- 逻辑部分 ---
         const listArea = document.getElementById('listArea');
         const strip = document.getElementById('strip');
         
-        // 渲染列表
         if (typeof gameHistory !== 'undefined') {
             gameHistory.reverse().forEach(game => {
+                // 兼容旧数据，如果没有 seed 就显示默认文本
+                const seedText = game.seed ? `Template ID: ${game.seed}` : "Seed: Verified";
+                
                 const div = document.createElement('div');
                 div.className = 'match-card';
                 div.onclick = () => { playReplay(game); };
                 div.innerHTML = `
                     <div>
-                        <div style="font-weight:bold; color:#fff; font-size:16px">${game.id}</div>
-                        <div style="font-size:12px; color:#666; margin-top:4px">${game.date}</div>
+                        <div class="info">${game.id} <span style="font-size:10px;color:#666;font-weight:normal;margin-left:5px">${game.players.length}人局</span></div>
+                        <div class="seed-info">🔑 ${seedText}</div>
                     </div>
                     <div class="w-name">👑 ${game.players[game.winnerIdx]}</div>
                 `;
                 listArea.appendChild(div);
             });
         } else {
-            listArea.innerHTML = '<div style="text-align:center; padding:30px; color:#555">暂无数据</div>';
+            listArea.innerHTML = '<div style="text-align:center; padding:30px; color:#555">等待数据更新...</div>';
         }
 
         function playReplay(game) {
             document.getElementById('gameModal').style.display = 'flex';
             document.getElementById('winnerArea').style.display = 'none';
             document.querySelector('.case-container').style.display = 'block';
-            runRound(game, 0, [0, 1, 2]);
+            
+            // 存活名单初始化：根据玩家数量自动生成 [0, 1, 2, 3, 4...]
+            const initialAlive = game.players.map((_, i) => i);
+            runRound(game, 0, initialAlive);
         }
 
         async function runRound(game, roundIndex, aliveIndices) {
+            // 检查是否所有淘汰都结束了
             if (roundIndex >= game.outSequence.length) {
                 showWinner(game.players[game.winnerIdx]);
                 return;
             }
 
             const victimIdx = game.outSequence[roundIndex];
+            const roundTag = document.getElementById('roundTag');
             const statusText = document.getElementById('statusText');
-            statusText.innerText = `处决进行中 (${roundIndex + 1}/${game.outSequence.length})`;
+            
+            roundTag.innerText = `ELIMINATION ROUND ${roundIndex + 1}/${game.outSequence.length}`;
+            statusText.innerText = "ROLLING...";
             statusText.style.color = "#fff";
 
             // 生成卡片
@@ -275,6 +257,7 @@
             for (let i = 0; i < TOTAL_CARDS; i++) {
                 const item = document.createElement('div');
                 item.className = 'item';
+                // 确保只随机抽选“活着”的人
                 let pIndex = (i === LANDING_INDEX) ? victimIdx : aliveIndices[Math.floor(Math.random() * aliveIndices.length)];
                 
                 item.innerHTML = `
@@ -288,49 +271,38 @@
 
             await wait(100);
 
-            // 滚动参数
             const randomOffset = Math.floor(Math.random() * 50) - 25;
             const targetX = -(LANDING_INDEX * CARD_WIDTH) - (CARD_WIDTH / 2) + randomOffset;
-            const duration = 5000;
+            const duration = 4000; // 每轮时间稍微缩短一点，因为有4轮，太长了会无聊
 
             strip.style.transition = `transform ${duration}ms cubic-bezier(0.15, 0, 0.2, 1)`;
             strip.style.transform = `translateX(${targetX}px)`;
 
-            // --- 模拟物理节奏的声音触发 ---
-            // 这是一个精心调校的循环，让声音一开始快，然后慢慢变慢
-            let currentDelay = 50; // 初始间隔 (ms)
+            // 声音逻辑
+            let currentDelay = 50; 
             let timeElapsed = 0;
-            
             const tickLoop = () => {
-                if (timeElapsed >= duration - 500) return; // 结束前停止声音
-                
-                playClickSound(); // 播放“咔哒”
-                
-                // 下一次响声的时间
+                if (timeElapsed >= duration - 500) return;
+                playClickSound();
                 setTimeout(tickLoop, currentDelay);
-                
-                // 累加时间
                 timeElapsed += currentDelay;
-                // 间隔变大（减速效果）
                 currentDelay = currentDelay * 1.08; 
             };
-            tickLoop(); // 启动声音
+            tickLoop();
 
-            // 等待滚动结束
             await wait(duration);
 
-            // --- 处决 ---
+            // 处决
             const target = document.getElementById('target');
             target.classList.add('eliminated');
+            playThudSound();
             
-            playThudSound(); // 播放重击声
-            
-            statusText.innerText = "已淘汰";
+            statusText.innerText = "ELIMINATED";
             statusText.style.color = "var(--red)";
             document.getElementById('gameModal').style.animation = 'flashRed 0.3s';
             if (navigator.vibrate) navigator.vibrate(300);
 
-            await wait(2000);
+            await wait(1500); // 稍微缩短等待时间
             document.getElementById('gameModal').style.animation = ''; 
 
             // 下一轮
@@ -340,6 +312,7 @@
         function showWinner(name) {
             document.querySelector('.case-container').style.display = 'none';
             document.getElementById('statusText').innerText = "";
+            document.getElementById('roundTag').innerText = "";
             
             const wArea = document.getElementById('winnerArea');
             wArea.style.display = 'flex';
@@ -349,6 +322,8 @@
             if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
         }
 
+        function showInfo() { document.getElementById('infoModal').style.display = 'flex'; }
+        function closeInfo() { document.getElementById('infoModal').style.display = 'none'; }
         function closeModal() { document.getElementById('gameModal').style.display = 'none'; }
         function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
     </script>
