@@ -3,356 +3,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CS:GO 饰品大逃杀 | 官方回放</title>
+    <title>CS:GO 饰品大逃杀 | 官方开箱回放</title>
     <script src="data.js"></script>
     <style>
         :root {
-            --bg: #18181b; /* 深色背景 */
-            --card-bg: #222225;
-            --accent: #dfa048; /* 传说金 */
-            --red: #cf4647; /* 杀敌红 */
-            --blue: #5e98d9; /* CT蓝 */
-            --text-main: #f0f0f0;
-            --text-sub: #9ca3af;
+            --bg: #1e1e1e;
+            --case-bg: #151515;
+            --line-gold: #eebc51;
+            --red: #d32f2f;
+            --text: #e0e0e0;
+            --card-width: 100px; /* 单个卡片宽度 */
+            --card-height: 120px;
         }
 
         body {
             background-color: var(--bg);
-            background-image: radial-gradient(circle at 50% 0, #2d2d35, var(--bg));
-            color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-image: radial-gradient(circle at 50% 0, #2b2b2b, #151515);
+            color: var(--text);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
 
-        /* 头部样式 */
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            width: 100%;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
+        h1 {
+            color: var(--line-gold);
             font-style: italic;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--accent);
-            text-shadow: 0 0 10px rgba(223, 160, 72, 0.3);
-        }
-        .header p {
-            margin: 5px 0 0;
-            font-size: 12px;
-            color: var(--text-sub);
+            text-shadow: 0 0 15px rgba(238, 188, 81, 0.4);
+            margin: 10px 0 30px;
+            font-size: 24px;
         }
 
-        /* 列表容器 */
-        .history-list {
-            width: 100%;
-            max-width: 500px;
-            padding-bottom: 50px;
-        }
-
-        /* 单条记录样式 */
-        .match-card {
-            background: linear-gradient(90deg, var(--card-bg) 0%, #2a2a2e 100%);
-            border-left: 4px solid var(--text-sub);
-            border-radius: 4px;
-            margin-bottom: 12px;
+        /* 历史列表样式 */
+        .history-list { width: 100%; max-width: 600px; padding-bottom: 50px; }
+        .history-item {
+            background: linear-gradient(90deg, #252525 0%, #2a2a2a 100%);
+            border-left: 3px solid #555;
+            margin-bottom: 10px;
             padding: 15px;
+            border-radius: 4px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            transition: 0.2s;
         }
+        .history-item:active { transform: scale(0.98); background: #333; }
+        .win-tag { color: var(--line-gold); font-weight: bold; font-size: 14px; }
+        .date-tag { font-size: 12px; color: #777; margin-top: 4px; }
 
-        .match-card:active {
-            transform: scale(0.98);
-        }
-
-        .match-card::after {
-            content: '▶';
-            position: absolute;
-            right: 15px;
-            opacity: 0.1;
-            font-size: 20px;
-        }
-
-        /* 赢家高亮样式 */
-        .match-card.win-gold { border-left-color: var(--accent); }
-        
-        .match-info h3 { margin: 0; font-size: 16px; font-weight: bold; }
-        .match-info span { font-size: 12px; color: var(--text-sub); display: block; margin-top: 4px; }
-        
-        .winner-badge {
-            text-align: right;
-            margin-right: 20px;
-        }
-        .winner-badge .label { font-size: 10px; color: var(--text-sub); text-transform: uppercase; }
-        .winner-badge .name { font-size: 16px; font-weight: bold; color: var(--accent); }
-
-        /* 弹窗播放器 */
+        /* --- 开箱器弹窗 --- */
         .modal {
             display: none;
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95);
             z-index: 100;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
         }
 
-        .modal-header {
-            position: absolute;
-            top: 40px;
-            text-align: center;
-            width: 100%;
-        }
-
-        .round-status {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--text-main);
-            margin-bottom: 10px;
-            height: 40px;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 20px; right: 20px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+        .status-bar {
             color: #fff;
-            width: 36px; height: 36px;
-            border-radius: 50%;
             font-size: 20px;
-            line-height: 34px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            font-weight: bold;
             text-align: center;
-            cursor: pointer;
+            min-height: 30px;
         }
 
-        /* 战场区域 - 手机端适配 */
-        .battle-ground {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
+        /* 核心：滚动窗口 */
+        .case-window {
             width: 100%;
-            max-width: 400px;
+            max-width: 500px; /* 限制最大宽度 */
+            height: 160px;
+            background: var(--case-bg);
+            border-top: 4px solid #333;
+            border-bottom: 4px solid #333;
+            position: relative;
+            overflow: hidden; /* 隐藏超出部分 */
+            box-shadow: inset 0 0 20px #000;
+            margin-bottom: 30px;
         }
 
-        .player-card {
-            width: 90px;
-            height: 120px;
+        /* 金色中轴线 */
+        .center-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--line-gold);
+            transform: translateX(-50%);
+            z-index: 10;
+            box-shadow: 0 0 10px var(--line-gold);
+        }
+        .center-line::after {
+            content: '▼';
+            color: var(--line-gold);
+            position: absolute;
+            top: 5px;
+            left: -6px;
+            font-size: 12px;
+        }
+
+        /* 滚动条带 */
+        .items-strip {
+            display: flex;
+            height: 100%;
+            align-items: center;
+            position: absolute;
+            left: 50%; /* 从中间开始算 */
+            /* 初始位置：我们需要通过JS动态计算让它往右偏移，从而看起来是从左边滚过来的 */
+        }
+
+        /* 单个卡片 */
+        .item-card {
+            width: var(--card-width);
+            height: var(--card-height);
             background: #2b2b2b;
-            border: 2px solid #444;
-            border-radius: 8px;
+            border: 1px solid #444;
+            margin: 0 5px; /* 间距 */
+            flex-shrink: 0; /* 防止压缩 */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
-        .player-card .avatar { font-size: 32px; margin-bottom: 8px; }
-        .player-card .p-name { font-size: 12px; font-weight: bold; text-align: center; padding: 0 4px; word-break: break-all;}
         
-        /* 动画状态 */
-        .player-card.active {
-            border-color: #fff;
-            box-shadow: 0 0 20px rgba(255,255,255,0.4);
-            background: #3a3a3a;
-            transform: scale(1.1);
-            z-index: 10;
-        }
-
-        .player-card.eliminated {
+        .item-card.eliminated {
+            background: #3a1c1c;
             border-color: var(--red);
-            background: rgba(207, 70, 71, 0.1);
-            opacity: 0.5;
-            transform: scale(0.9);
-            filter: grayscale(100%);
         }
-        .player-card.eliminated::after {
-            content: '❌';
-            position: absolute;
+        .item-card.eliminated::after {
+            content: '☠️';
             font-size: 40px;
+            position: absolute;
             opacity: 0.8;
         }
 
-        .player-card.winner {
-            border-color: var(--accent);
-            background: linear-gradient(135deg, #3d342b, #5e4e2a);
-            box-shadow: 0 0 30px rgba(223, 160, 72, 0.6);
-            transform: scale(1.25);
-            z-index: 20;
-        }
-        .player-card.winner::before {
-            content: '👑';
-            position: absolute;
-            top: -15px;
-            font-size: 24px;
-            animation: bounce 1s infinite;
-        }
+        .avatar { font-size: 30px; margin-bottom: 10px; }
+        .name { font-size: 12px; text-align: center; word-break: break-all; padding: 0 5px; color: #ccc;}
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+        /* 关闭按钮 */
+        .close-btn {
+            padding: 10px 30px;
+            background: transparent;
+            border: 1px solid #555;
+            color: #888;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 20px;
         }
+        .close-btn:hover { border-color: #fff; color: #fff; }
+
+        /* 胜利展示 */
+        .winner-showcase {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: popIn 0.5s ease;
+        }
+        .winner-card {
+            width: 150px;
+            height: 200px;
+            background: linear-gradient(135deg, #2b2b2b, #4a3b18);
+            border: 2px solid var(--line-gold);
+            box-shadow: 0 0 50px rgba(238, 188, 81, 0.3);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>🗡️ 饰品大逃杀</h1>
-        <p>BATTLE ROYALE / REPLAY SYSTEM</p>
-    </div>
+    <h1>📦 CS:GO 官方开箱回放</h1>
+    <div style="font-size:12px; color:#666; margin-bottom:20px;">点击下方列表查看处决过程</div>
 
-    <div class="history-list" id="listArea">
-        <!-- 列表由 JS 自动填充 -->
-    </div>
+    <div class="history-list" id="listArea"></div>
 
-    <!-- 全屏播放器 -->
+    <!-- 播放器弹窗 -->
     <div class="modal" id="gameModal">
-        <div class="close-btn" onclick="closeModal()">×</div>
-        
-        <div class="modal-header">
-            <div style="color:var(--text-sub); font-size:12px; letter-spacing:2px; margin-bottom:5px;">ROUND STATUS</div>
-            <div class="round-status" id="statusText">LOADING...</div>
+        <div class="status-bar" id="statusText">正在初始化...</div>
+
+        <!-- 滚动窗口 -->
+        <div class="case-window">
+            <div class="center-line"></div>
+            <div class="items-strip" id="strip">
+                <!-- JS会在这里生成一长串卡片 -->
+            </div>
         </div>
 
-        <div class="battle-ground" id="cardsArea"></div>
+        <!-- 胜利展示区域 -->
+        <div class="winner-showcase" id="winnerArea">
+            <div class="winner-card">
+                <div style="font-size:60px">👑</div>
+                <div style="margin-top:20px; font-weight:bold; color:var(--line-gold)" id="winnerName">玩家名</div>
+                <div style="font-size:12px; margin-top:5px; color:#aaa">最终幸存者</div>
+            </div>
+        </div>
+
+        <button class="close-btn" onclick="closeModal()">关闭回放</button>
     </div>
 
     <script>
         const listArea = document.getElementById('listArea');
 
-        // 渲染列表 (倒序)
+        // 1. 渲染列表
         if (typeof gameHistory !== 'undefined') {
             gameHistory.reverse().forEach(game => {
-                const item = document.createElement('div');
-                item.className = 'match-card win-gold';
-                item.onclick = () => playReplay(game);
-                
-                item.innerHTML = `
-                    <div class="match-info">
-                        <h3>${game.id}</h3>
-                        <span>📅 ${game.date}</span>
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.onclick = () => playReplay(game);
+                div.innerHTML = `
+                    <div>
+                        <div style="font-weight:bold">${game.id}</div>
+                        <div class="date-tag">${game.date}</div>
                     </div>
-                    <div class="winner-badge">
-                        <div class="label">Winner</div>
-                        <div class="name">${game.players[game.winnerIdx]}</div>
-                    </div>
+                    <div class="win-tag">🏆 ${game.players[game.winnerIdx]}</div>
                 `;
-                listArea.appendChild(item);
+                listArea.appendChild(div);
             });
         } else {
-            listArea.innerHTML = '<div style="text-align:center;color:#666">暂无比赛记录</div>';
+            listArea.innerHTML = '<div style="text-align:center; padding:20px; color:#555">暂无数据，请检查 data.js</div>';
         }
 
-        // 播放逻辑
+        // 2. 核心逻辑
+        const strip = document.getElementById('strip');
+        const statusText = document.getElementById('statusText');
+        const winnerArea = document.getElementById('winnerArea');
+        const CARD_WIDTH = 112; // 100px width + 10px margin + 2px border
+
         function playReplay(game) {
-            const modal = document.getElementById('gameModal');
-            const area = document.getElementById('cardsArea');
-            const status = document.getElementById('statusText');
+            document.getElementById('gameModal').style.display = 'flex';
+            winnerArea.style.display = 'none';
+            document.querySelector('.case-window').style.display = 'block';
             
-            modal.style.display = 'flex';
-            area.innerHTML = '';
-            status.innerText = "准备就绪";
-            status.style.color = "#fff";
-
-            // 生成卡片
-            game.players.forEach((p, i) => {
-                const card = document.createElement('div');
-                card.className = 'player-card';
-                card.id = `p-${i}`;
-                card.innerHTML = `<div class="avatar">👤</div><div class="p-name">${p}</div>`;
-                area.appendChild(card);
-            });
-
-            // 启动动画
-            startAnimation(game);
+            runRound(game, 0, [0, 1, 2]); // 从第一轮开始
         }
 
-        async function startAnimation(game) {
-            const status = document.getElementById('statusText');
-            let alive = [0, 1, 2];
-
-            // 初始等待
-            await wait(800);
-
-            for (let i = 0; i < game.outSequence.length; i++) {
-                const victimIdx = game.outSequence[i];
-                
-                // 转盘阶段
-                status.innerText = `锁定目标中...`;
-                status.style.color = "#fff";
-                await spinEffect(alive);
-
-                // 处决阶段
-                const card = document.getElementById(`p-${victimIdx}`);
-                card.classList.add('eliminated');
-                
-                // 震动反馈 (如果手机支持)
-                if (navigator.vibrate) navigator.vibrate(200);
-
-                status.innerText = `${game.players[victimIdx]} 已淘汰`;
-                status.style.color = "var(--red)";
-                
-                alive = alive.filter(idx => idx !== victimIdx);
-                await wait(1500);
+        async function runRound(game, roundIndex, aliveIndices) {
+            // 检查是否结束
+            if (roundIndex >= game.outSequence.length) {
+                showWinner(game.players[game.winnerIdx]);
+                return;
             }
 
-            // 胜利阶段
-            const winnerIdx = game.winnerIdx;
-            const winCard = document.getElementById(`p-${winnerIdx}`);
-            winCard.classList.add('winner');
-            status.innerText = `${game.players[winnerIdx]} 获胜!`;
-            status.style.color = "var(--accent)";
+            const victimIdx = game.outSequence[roundIndex];
+            const victimName = game.players[victimIdx];
+
+            statusText.innerText = `第 ${roundIndex + 1} 轮处决：锁定中...`;
+            statusText.style.color = "#fff";
+
+            // --- 生成滚动条带 ---
+            // 我们需要生成一长串卡片，让 victim 刚好停在中间
+            // 假设我们让转盘转 35 个卡片的距离
+            const LANDING_INDEX = 35; 
+            const TOTAL_CARDS = 45;
             
-            // 胜利震动
-            if (navigator.vibrate) navigator.vibrate([100,50,100]);
-        }
+            strip.innerHTML = '';
+            strip.style.transition = 'none'; // 重置动画
+            strip.style.transform = `translateX(0px)`; // 回到起点
 
-        function spinEffect(aliveIndices) {
-            return new Promise(resolve => {
-                let steps = 0;
-                let speed = 50;
-                const maxSteps = 12 + Math.floor(Math.random() * 5); 
+            // 填充卡片
+            for (let i = 0; i < TOTAL_CARDS; i++) {
+                const card = document.createElement('div');
+                card.className = 'item-card';
                 
-                const timer = () => {
-                    aliveIndices.forEach(idx => document.getElementById(`p-${idx}`).classList.remove('active'));
-                    const current = aliveIndices[steps % aliveIndices.length];
-                    document.getElementById(`p-${current}`).classList.add('active');
-                    
-                    steps++;
-                    if (steps < maxSteps) {
-                        if (steps > maxSteps - 5) speed += 40;
-                        setTimeout(timer, speed);
-                    } else {
-                        setTimeout(() => {
-                            aliveIndices.forEach(idx => document.getElementById(`p-${idx}`).classList.remove('active'));
-                            resolve();
-                        }, 500);
-                    }
-                };
-                timer();
-            });
+                // 决定这个位置放谁
+                let pIndex;
+                if (i === LANDING_INDEX) {
+                    pIndex = victimIdx; // 这个位置必须是倒霉蛋
+                } else {
+                    // 其他位置随机放活着的玩家
+                    pIndex = aliveIndices[Math.floor(Math.random() * aliveIndices.length)];
+                }
+
+                card.innerHTML = `<div class="avatar">👤</div><div class="name">${game.players[pIndex]}</div>`;
+                
+                // 给倒霉蛋加个标记方便JS找，但在转动时看不出来
+                if (i === LANDING_INDEX) card.id = 'target-card';
+                
+                strip.appendChild(card);
+            }
+
+            // --- 开始滚动动画 ---
+            await new Promise(r => setTimeout(r, 100)); // 稍等渲染
+
+            // 计算位移量
+            // 目标是让 LANDING_INDEX 的卡片中心对准中轴线
+            // 公式：-(landingIndex * width) + 稍微一点随机偏移(模拟没对准)
+            const randomOffset = Math.floor(Math.random() * 40) - 20; // -20 到 +20 的随机偏移
+            const targetX = -(LANDING_INDEX * CARD_WIDTH) - (CARD_WIDTH / 2) + randomOffset;
+
+            // CS:GO 风格的缓动：cubic-bezier(0.1, 0, 0.2, 1) 是一开始快，后面非常慢
+            strip.style.transition = 'transform 5s cubic-bezier(0.15, 0, 0.2, 1)';
+            strip.style.transform = `translateX(${targetX}px)`;
+
+            // 等待动画结束 (5秒)
+            await new Promise(r => setTimeout(r, 5000));
+
+            // --- 处决时刻 ---
+            statusText.innerText = `${victimName} 已被淘汰`;
+            statusText.style.color = "var(--red)";
+            
+            const targetCard = document.getElementById('target-card');
+            targetCard.classList.add('eliminated'); // 变红，显示骷髅
+
+            if (navigator.vibrate) navigator.vibrate(300); // 震动
+
+            await new Promise(r => setTimeout(r, 2000)); // 展示处决结果2秒
+
+            // --- 准备下一轮 ---
+            const nextAlive = aliveIndices.filter(i => i !== victimIdx);
+            runRound(game, roundIndex + 1, nextAlive);
         }
 
-        function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
-        function closeModal() { document.getElementById('gameModal').style.display = 'none'; }
+        function showWinner(name) {
+            document.querySelector('.case-window').style.display = 'none'; // 隐藏转盘
+            winnerArea.style.display = 'flex'; // 显示奖杯
+            document.getElementById('winnerName').innerText = name;
+            statusText.innerText = "处决结束，赢家诞生";
+            statusText.style.color = "var(--line-gold)";
+            if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
+        }
+
+        function closeModal() {
+            document.getElementById('gameModal').style.display = 'none';
+        }
     </script>
 </body>
 </html>
