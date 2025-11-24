@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS:GO 饰品大逃杀 - 历史记录</title>
+    <script src="data.js"></script> <!-- 读取数据文件 -->
+    <style>
+        :root { --bg: #1b1b1b; --card: #2d2d2d; --gold: #de9b35; --red: #d32f2f; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        /* 列表页样式 */
+        .history-list { width: 100%; max-width: 600px; }
+        .history-item { 
+            background: var(--card); border: 1px solid #444; margin-bottom: 10px; padding: 15px; 
+            border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            transition: 0.2s;
+        }
+        .history-item:hover { border-color: var(--gold); transform: translateX(5px); }
+        .tag { background: #000; padding: 5px 10px; border-radius: 4px; font-size: 12px; color: #888; }
+        .winner-tag { color: var(--gold); font-weight: bold; }
+
+        /* 播放器弹窗样式 */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 99; flex-direction: column; align-items: center; justify-content: center; }
+        .game-area { display: flex; gap: 20px; margin: 40px 0; }
+        .card { width: 100px; height: 120px; background: #333; border: 2px solid #555; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.3s; position: relative;}
+        .card.active { box-shadow: 0 0 20px #fff; border-color: #fff; transform: scale(1.1); z-index: 2; }
+        .card.dead { background: #3a1c1c; border-color: var(--red); opacity: 0.5; transform: scale(0.9); }
+        .card.winner { background: linear-gradient(135deg, #333, #5a4b28); border-color: var(--gold); box-shadow: 0 0 30px var(--gold); transform: scale(1.2); z-index: 5; }
+        
+        .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: 1px solid #fff; color: #fff; padding: 10px 20px; cursor: pointer; border-radius: 20px; }
+        .status-text { margin-top: 20px; font-size: 20px; color: #aaa; min-height: 30px;}
+        h1 { color: var(--gold); font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <h1 style="margin-bottom: 30px;">🔫 往期处决回放</h1>
+    
+    <div class="history-list" id="listArea">
+        <!-- 列表会通过JS自动生成 -->
+    </div>
+
+    <!-- 播放弹窗 -->
+    <div class="modal" id="gameModal">
+        <button class="close-btn" onclick="closeModal()">关闭回放</button>
+        <h2 id="roundTitle">第X期</h2>
+        <div class="status-text" id="statusText">准备开始...</div>
+        
+        <div class="game-area" id="cardsArea">
+            <!-- 卡片 -->
+        </div>
+    </div>
+
+    <script>
+        // 1. 初始化列表
+        const listArea = document.getElementById('listArea');
+        // 倒序排列，最新的在前面
+        gameHistory.reverse().forEach(game => {
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            div.innerHTML = `
+                <div>
+                    <div style="font-weight:bold; font-size:18px;">${game.id}</div>
+                    <div style="font-size:12px; color:#aaa; margin-top:5px;">${game.date}</div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="tag">幸存者</div>
+                    <div class="winner-tag">${game.players[game.winnerIdx]}</div>
+                </div>
+            `;
+            div.onclick = () => playReplay(game);
+            listArea.appendChild(div);
+        });
+
+        // 2. 回放逻辑
+        function playReplay(game) {
+            const modal = document.getElementById('gameModal');
+            const area = document.getElementById('cardsArea');
+            const title = document.getElementById('roundTitle');
+            const status = document.getElementById('statusText');
+            
+            modal.style.display = 'flex';
+            title.innerText = game.id + " 处决回放";
+            area.innerHTML = '';
+            status.innerText = "正在加载回放数据...";
+            status.style.color = "#aaa";
+
+            // 生成卡片
+            game.players.forEach((p, i) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.id = `p-${i}`;
+                card.innerHTML = `<div style="font-size:30px">👤</div><div style="font-size:12px;margin-top:5px;font-weight:bold">${p}</div>`;
+                area.appendChild(card);
+            });
+
+            // 开始模拟动画序列
+            startAnimation(game);
+        }
+
+        async function startAnimation(game) {
+            const status = document.getElementById('statusText');
+            
+            // 存活的索引
+            let alive = [0, 1, 2];
+
+            // 遍历淘汰序列
+            for (let i = 0; i < game.outSequence.length; i++) {
+                const victimIdx = game.outSequence[i];
+                
+                status.innerText = `第 ${i+1} 轮轮盘转动中...`;
+                status.style.color = "#fff";
+
+                // 模拟转盘转动效果 (纯视觉)
+                await spinEffect(alive);
+
+                // 处决
+                const card = document.getElementById(`p-${victimIdx}`);
+                card.classList.add('dead');
+                card.innerHTML = `<div style="font-size:30px">☠️</div><div style="font-size:12px;margin-top:5px;text-decoration:line-through">${game.players[victimIdx]}</div>`;
+                
+                status.innerText = `${game.players[victimIdx]} 被淘汰!`;
+                status.style.color = "var(--red)";
+                
+                // 从存活列表移除
+                alive = alive.filter(idx => idx !== victimIdx);
+                
+                await new Promise(r => setTimeout(r, 1500)); // 暂停一下
+            }
+
+            // 宣布胜利
+            const winnerIdx = game.winnerIdx;
+            const winCard = document.getElementById(`p-${winnerIdx}`);
+            winCard.classList.add('winner');
+            status.innerText = `🎉 最终幸存者: ${game.players[winnerIdx]}`;
+            status.style.color = "var(--gold)";
+        }
+
+        function spinEffect(aliveIndices) {
+            return new Promise(resolve => {
+                let steps = 0;
+                let speed = 50;
+                const maxSteps = 15; // 转多少次
+                
+                const timer = () => {
+                    // 清除高亮
+                    aliveIndices.forEach(idx => document.getElementById(`p-${idx}`).classList.remove('active'));
+                    
+                    // 下一个高亮
+                    const current = aliveIndices[steps % aliveIndices.length];
+                    document.getElementById(`p-${current}`).classList.add('active');
+                    
+                    steps++;
+                    if (steps < maxSteps) {
+                        if (steps > 10) speed += 30; // 减速
+                        setTimeout(timer, speed);
+                    } else {
+                        setTimeout(() => {
+                            aliveIndices.forEach(idx => document.getElementById(`p-${idx}`).classList.remove('active'));
+                            resolve();
+                        }, 500);
+                    }
+                };
+                timer();
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('gameModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
