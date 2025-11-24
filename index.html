@@ -163,20 +163,28 @@
         </div>
     </div>
 
-    <!-- 公平性说明弹窗 (修复手机显示) -->
+    <!-- 公平性说明弹窗 (文案已更新) -->
     <div class="info-modal" id="infoModal">
         <div class="info-box">
-            <div class="info-title">🛡️ 随机算法与公平性</div>
-            <p>1. <b>机制透明：</b>本模式为“大逃杀”淘汰制，每局由5名玩家参与，通过4轮淘汰决出1名胜者。</p>
-            <p>2. <b>绝对随机：</b>淘汰序列基于官方生成的 <b>Template ID (饰品模板编号)</b> 计算。该编号由 Valve 服务器生成，具有不可预测性。</p>
-            <p>3. <b>身份绑定：</b>每位玩家在当期对应唯一的 CS:GO 稀有度颜色：
-                <br><span style="color:#5e98d9">■ 工业级</span> 
-                <span style="color:#4b69ff">■ 军规级</span> 
-                <span style="color:#8847ff">■ 受限级</span><br>
-                <span style="color:#d32ce6">■ 保密级</span> 
-                <span style="color:#eb4b4b">■ 隐秘级</span>
+            <div class="info-title">🛡️ 随机算法与公平性声明</div>
+            
+            <p>1. <b>核心算法：</b>
+            本系统的淘汰逻辑基于浏览器内核的高精度 <b>Math.random()</b> 随机数生成器。该算法独立运行，不受任何外部因素干扰。</p>
+            
+            <p>2. <b>概率均等：</b>
+            在5人死斗模式中，每位玩家初始胜率严格相等（20%）。每一轮淘汰都是一次独立的随机事件，系统并在毫秒级时间内计算出最终幸存者。</p>
+            
+            <p>3. <b>数据存证：</b>
+            每次计算生成的“淘汰序列”会立即生成唯一的 Hash 记录并上传至开源代码库。这意味着一旦结果生成，包括管理员在内的任何人均无法进行二次修改或撤回。</p>
+            
+            <p>4. <b>身份绑定：</b>
+            <br><span style="color:#5e98d9">■ 1号位 (工业级)</span> 
+            <span style="color:#4b69ff">■ 2号位 (军规级)</span><br>
+            <span style="color:#8847ff">■ 3号位 (受限级)</span>
+            <span style="color:#d32ce6">■ 4号位 (保密级)</span><br>
+            <span style="color:#eb4b4b">■ 5号位 (隐秘级)</span>
             </p>
-            <p>4. <b>验证方式：</b>点击列表中的记录可查看当期 Seed (开奖依据)，确保无人为干预。</p>
+            
             <button class="btn" style="width:100%; margin-top:20px; border-color:#555" onclick="closeInfo()">我明白了</button>
         </div>
     </div>
@@ -368,3 +376,4 @@
     </script>
 </body>
 </html>
+
