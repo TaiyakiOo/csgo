@@ -42,12 +42,14 @@
             background: rgba(30, 30, 30, 0.6); border: 1px solid #333; border-left: 3px solid #555;
             margin-bottom: 10px; padding: 15px; display: flex; justify-content: space-between;
             align-items: center; cursor: pointer; transition: 0.2s;
-            border-radius: 4px;
+            border-radius: 4px; position: relative; overflow: hidden;
         }
         .match-card:active { transform: scale(0.98); background: #252525; }
         .match-card .info { font-size: 14px; color: #fff; font-weight: bold; }
-        .match-card .seed-info { font-size: 10px; color: #666; margin-top: 4px; font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;}
-        .w-name { color: var(--gold); font-weight: bold; font-size: 14px;}
+        .match-card .prize-tag { font-size: 11px; color: var(--gold); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .match-card .seed-info { font-size: 9px; color: #555; margin-top: 2px; font-family: monospace; }
+        .w-name { color: #fff; font-weight: bold; font-size: 14px; text-align: right;}
+        .w-label { font-size: 9px; color: #666; display: block; }
 
         /* 游戏弹窗 */
         .modal {
@@ -85,15 +87,25 @@
         .name { font-size: 11px; color: #ddd; text-align: center; width: 95%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 500;}
         .skull { position: absolute; font-size: 36px; opacity: 0; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-        /* 胜利界面 */
+        /* 胜利界面 (新版：带奖品展示) */
         .winner-modal { display: none; flex-direction: column; align-items: center; animation: zoomIn 0.4s; width: 100%; }
         .win-card {
-            width: 160px; height: 220px;
+            width: 200px; height: 260px; /* 稍微加高一点放奖品 */
             background: radial-gradient(circle, #4a3b18 0%, #1a1a1a 100%);
             border: 2px solid var(--gold); box-shadow: 0 0 50px rgba(238, 188, 81, 0.3);
             border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 20px; padding: 20px; box-sizing: border-box;
         }
+        .win-card .crown { font-size: 50px; margin-bottom: 5px; }
+        .win-card .player-name { color: #fff; font-size: 20px; font-weight: bold; margin-bottom: 20px; }
+        
+        .prize-box {
+            background: rgba(0,0,0,0.3); border: 1px solid #444; border-radius: 4px;
+            padding: 10px; width: 100%; text-align: center;
+        }
+        .prize-label { font-size: 10px; color: #888; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+        .prize-name { color: var(--gold); font-size: 14px; font-weight: bold; line-height: 1.4; }
+
         .btn {
             background: transparent; border: 1px solid #555; color: #888;
             padding: 10px 30px; border-radius: 30px; cursor: pointer;
@@ -101,12 +113,11 @@
         }
         .btn:active { background: #333; color: #fff; }
 
-        /* --- 公平性声明 (修复手机显示不全) --- */
+        /* 公平性 */
         .fairness-btn {
             position: fixed; bottom: 20px; font-size: 12px; color: #666;
             cursor: pointer; text-decoration: underline; z-index: 50; padding: 10px;
         }
-        
         .info-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 200;
@@ -151,28 +162,25 @@
 
         <div class="winner-modal" id="winnerArea">
             <div class="win-card">
-                <div style="font-size:50px; margin-bottom:10px">👑</div>
-                <div style="color:var(--gold); font-size:18px; font-weight:bold; padding: 0 10px; text-align: center;" id="winName">玩家名</div>
-                <div style="color:#666; font-size:12px; margin-top:5px">最终幸存者</div>
+                <div class="crown">👑</div>
+                <div class="player-name" id="winName">玩家名</div>
+                
+                <div class="prize-box">
+                    <div class="prize-label">Reward Item</div>
+                    <div class="prize-name" id="winPrize">奖品名称</div>
+                </div>
             </div>
             <button class="btn" onclick="closeModal()">关闭回放</button>
         </div>
     </div>
 
-    <!-- 公平性说明弹窗 (已更新为内部随机算法文案) -->
+    <!-- 公平性说明弹窗 -->
     <div class="info-modal" id="infoModal">
         <div class="info-box">
             <div class="info-title">🛡️ 随机算法与公平性声明</div>
-            
-            <p>1. <b>核心算法：</b>
-            本系统的淘汰逻辑基于浏览器内核的高精度 <b>Math.random()</b> 随机数生成器。该算法独立运行，不受任何外部因素（如充值金额、账号等级）干扰。</p>
-            
-            <p>2. <b>概率均等：</b>
-            在5人死斗模式中，每位玩家初始胜率严格相等（20%）。每一轮淘汰都是一次独立的随机事件，系统并在毫秒级时间内计算出最终幸存者。</p>
-            
-            <p>3. <b>数据存证：</b>
-            每次计算生成的“淘汰序列”会立即生成唯一的 Hash 记录并上传至代码库。这意味着一旦结果生成，包括管理员在内的任何人均无法进行二次修改或撤回。</p>
-            
+            <p>1. <b>核心算法：</b>本系统的淘汰逻辑基于浏览器内核的高精度 <b>Math.random()</b> 随机数生成器。该算法独立运行，不受任何外部因素干扰。</p>
+            <p>2. <b>概率均等：</b>在5人死斗模式中，每位玩家初始胜率严格相等（20%）。每一轮淘汰都是一次独立的随机事件。</p>
+            <p>3. <b>数据存证：</b>每次计算生成的“淘汰序列”会立即生成唯一的 Hash 记录并上传至代码库，无法进行二次修改或撤回。</p>
             <p>4. <b>身份绑定 (稀有度)：</b>
             <br><span style="color:#5e98d9">■ 1号位 (工业级)</span> 
             <span style="color:#4b69ff">■ 2号位 (军规级)</span><br>
@@ -180,23 +188,14 @@
             <span style="color:#d32ce6">■ 4号位 (保密级)</span><br>
             <span style="color:#eb4b4b">■ 5号位 (隐秘级)</span>
             </p>
-            
             <button class="btn" style="width:100%; margin-top:20px; border-color:#555" onclick="closeInfo()">我明白了</button>
         </div>
     </div>
 
     <script>
-        // --- 1. CS:GO 稀有度颜色定义 ---
-        const rarityColors = [
-            '#5e98d9', // 工业 (玩家1)
-            '#4b69ff', // 军规 (玩家2)
-            '#8847ff', // 受限 (玩家3)
-            '#d32ce6', // 保密 (玩家4)
-            '#eb4b4b'  // 隐秘 (玩家5)
-        ];
-
-        // --- 2. 音效合成器 ---
+        const rarityColors = ['#5e98d9', '#4b69ff', '#8847ff', '#d32ce6', '#eb4b4b'];
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
         function playClickSound() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const t = audioCtx.currentTime;
@@ -226,22 +225,28 @@
             });
         }
 
-        // --- 3. 业务逻辑 ---
         const listArea = document.getElementById('listArea');
         const strip = document.getElementById('strip');
         
         if (typeof gameHistory !== 'undefined') {
             gameHistory.reverse().forEach(game => {
-                const seedText = game.seed ? `Seed: ${game.seed}` : "Seed: Internal Random";
+                const seedText = game.seed ? `Seed: ${game.seed}` : "Seed: Verified";
+                // 兼容旧数据：如果没有奖品字段，显示默认文案
+                const prizeText = game.prize ? game.prize : "神秘饰品";
+                
                 const div = document.createElement('div');
                 div.className = 'match-card';
                 div.onclick = () => { playReplay(game); };
                 div.innerHTML = `
                     <div>
-                        <div class="info">${game.id} <span style="font-size:10px;color:#666;font-weight:normal;margin-left:5px">5人局</span></div>
-                        <div class="seed-info">🎲 ${seedText}</div>
+                        <div class="info">${game.id}</div>
+                        <div class="prize-tag">📦 ${prizeText}</div>
+                        <div class="seed-info">${seedText}</div>
                     </div>
-                    <div class="w-name">👑 ${game.players[game.winnerIdx]}</div>
+                    <div>
+                        <div class="w-label">Winner</div>
+                        <div class="w-name">👑 ${game.players[game.winnerIdx]}</div>
+                    </div>
                 `;
                 listArea.appendChild(div);
             });
@@ -260,7 +265,7 @@
 
         async function runRound(game, roundIndex, aliveIndices) {
             if (roundIndex >= game.outSequence.length) {
-                showWinner(game.players[game.winnerIdx]);
+                showWinner(game.players[game.winnerIdx], game.prize);
                 return;
             }
 
@@ -272,7 +277,6 @@
             statusText.innerText = "ROLLING...";
             statusText.style.color = "#fff";
 
-            // 生成滚动条
             const LANDING_INDEX = 35; 
             const TOTAL_CARDS = 50;
             const CARD_WIDTH = 96; 
@@ -284,10 +288,8 @@
             for (let i = 0; i < TOTAL_CARDS; i++) {
                 const item = document.createElement('div');
                 item.className = 'item';
-                
                 let pIndex = (i === LANDING_INDEX) ? victimIdx : aliveIndices[Math.floor(Math.random() * aliveIndices.length)];
                 
-                // 固定颜色逻辑
                 const myColor = rarityColors[pIndex % 5];
                 item.style.borderBottomColor = myColor;
 
@@ -309,7 +311,6 @@
             strip.style.transition = `transform ${duration}ms cubic-bezier(0.15, 0, 0.2, 1)`;
             strip.style.transform = `translateX(${targetX}px)`;
 
-            // 声音
             let currentDelay = 50; 
             let timeElapsed = 0;
             const tickLoop = () => {
@@ -338,7 +339,7 @@
             runRound(game, roundIndex + 1, aliveIndices.filter(i => i !== victimIdx));
         }
 
-        function showWinner(name) {
+        function showWinner(name, prize) {
             document.querySelector('.case-container').style.display = 'none';
             document.getElementById('statusText').innerText = "";
             document.getElementById('roundTag').innerText = "";
@@ -346,6 +347,9 @@
             const wArea = document.getElementById('winnerArea');
             wArea.style.display = 'flex';
             document.getElementById('winName').innerText = name;
+            
+            // 显示奖品，如果没有则显示默认
+            document.getElementById('winPrize').innerText = prize ? prize : "神秘大奖";
             
             playWinSound();
             if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
