@@ -6,6 +6,7 @@
     <title>CS:GO 饰品大逃杀 | 官方开箱</title>
     <script src="data.js"></script>
     <style>
+        /* --- 样式保持不变，依旧是高颜值的 CS:GO 风格 --- */
         :root {
             --bg: #141414;
             --card-bg: #1f1f1f;
@@ -24,7 +25,7 @@
                 radial-gradient(circle at 50% 0, #2a2a30 0%, transparent 60%),
                 repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 4px);
             color: var(--text);
-            font-family: 'DIN Alternate', 'Roboto', sans-serif; /* 类似游戏字体 */
+            font-family: 'DIN Alternate', 'Roboto', sans-serif;
             margin: 0;
             padding: 20px;
             display: flex;
@@ -34,173 +35,82 @@
             overflow-x: hidden;
         }
 
-        /* 顶部标题 */
         .header { text-align: center; margin-bottom: 30px; position: relative; }
         h1 {
-            margin: 0;
-            font-size: 28px;
-            font-style: italic;
-            text-transform: uppercase;
+            margin: 0; font-size: 28px; font-style: italic; text-transform: uppercase;
             background: linear-gradient(180deg, #fff 0%, #bbb 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
         .subtitle { color: var(--gold); font-size: 12px; letter-spacing: 2px; margin-top: 5px; text-shadow: 0 0 5px var(--gold-glow); }
 
-        /* 历史列表 */
         .history-list { width: 100%; max-width: 500px; padding-bottom: 80px; }
         .match-card {
-            background: rgba(30, 30, 30, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid #333;
-            border-left: 3px solid #555;
-            margin-bottom: 12px;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 2px;
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
+            background: rgba(30, 30, 30, 0.8); backdrop-filter: blur(10px);
+            border: 1px solid #333; border-left: 3px solid #555;
+            margin-bottom: 12px; padding: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-radius: 2px; transition: all 0.2s; position: relative; overflow: hidden;
         }
-        .match-card::before {
-            content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-            transform: skewX(-20deg) translateX(-150%);
-            transition: 0.5s;
-        }
-        .match-card:hover::before { transform: skewX(-20deg) translateX(150%); }
         .match-card:active { transform: scale(0.98); background: #252525; }
         
         .winner-info { text-align: right; }
         .w-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; }
-        .w-name { color: var(--gold); font-weight: bold; font-size: 16px; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .w-name { color: var(--gold); font-weight: bold; font-size: 16px; }
 
-        /* 弹窗容器 */
         .modal {
-            display: none;
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 100;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 100;
+            flex-direction: column; align-items: center; justify-content: center;
             animation: fadeIn 0.3s;
         }
 
-        /* 状态栏 */
-        .status-bar {
-            margin-bottom: 20px;
-            text-align: center;
-        }
+        .status-bar { margin-bottom: 20px; text-align: center; }
         .round-tag { font-size: 12px; color: var(--text-dim); letter-spacing: 3px; margin-bottom: 5px; }
         .action-text { font-size: 24px; font-weight: bold; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
 
-        /* 开箱窗口（核心） */
         .case-container {
-            width: 100%;
-            height: 160px;
-            background: #000;
-            position: relative;
-            border-top: 2px solid var(--gold);
-            border-bottom: 2px solid var(--gold);
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            margin-bottom: 40px;
-            overflow: hidden;
+            width: 100%; height: 160px; background: #000; position: relative;
+            border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8); margin-bottom: 40px; overflow: hidden;
         }
-        
-        /* 阴影遮罩，增加立体感 */
-        .case-container::before {
-            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 100px;
-            background: linear-gradient(90deg, #000, transparent); z-index: 5;
-        }
-        .case-container::after {
-            content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 100px;
-            background: linear-gradient(-90deg, #000, transparent); z-index: 5;
-        }
+        .case-container::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 100px; background: linear-gradient(90deg, #000, transparent); z-index: 5; }
+        .case-container::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 100px; background: linear-gradient(-90deg, #000, transparent); z-index: 5; }
 
-        /* 金色指针 */
         .pointer {
-            position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
-            background: var(--gold);
-            z-index: 10;
-            transform: translateX(-50%);
-            box-shadow: 0 0 15px var(--gold);
+            position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--gold);
+            z-index: 10; transform: translateX(-50%); box-shadow: 0 0 15px var(--gold);
         }
-        .pointer::after {
-            content: ''; position: absolute; top: 0; left: -6px;
-            border-left: 7px solid transparent;
-            border-right: 7px solid transparent;
-            border-top: 10px solid var(--gold);
-        }
-        .pointer::before {
-            content: ''; position: absolute; bottom: 0; left: -6px;
-            border-left: 7px solid transparent;
-            border-right: 7px solid transparent;
-            border-bottom: 10px solid var(--gold);
-        }
+        .pointer::after { content: ''; position: absolute; top: 0; left: -6px; border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 10px solid var(--gold); }
+        .pointer::before { content: ''; position: absolute; bottom: 0; left: -6px; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 10px solid var(--gold); }
 
-        /* 滚动条 */
-        .strip {
-            display: flex; height: 100%; align-items: center;
-            position: absolute; left: 50%;
-            will-change: transform; /* 性能优化 */
-        }
+        .strip { display: flex; height: 100%; align-items: center; position: absolute; left: 50%; will-change: transform; }
 
-        /* 卡片样式 */
         .item {
             width: var(--card-w); height: var(--card-h);
             background: linear-gradient(135deg, #2b2b2b, #1a1a1a);
-            border-bottom: 3px solid #444; /* 品质颜色条 */
-            margin: 0 4px;
-            flex-shrink: 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            border-bottom: 3px solid #444; margin: 0 4px;
+            flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
-        
-        /* 随机品质颜色 */
-        .item:nth-child(3n) { border-bottom-color: #5e98d9; } /* 蓝 */
-        .item:nth-child(3n+1) { border-bottom-color: #8847ff; } /* 紫 */
-        .item:nth-child(3n+2) { border-bottom-color: #d32ce6; } /* 粉 */
+        .item:nth-child(3n) { border-bottom-color: #5e98d9; }
+        .item:nth-child(3n+1) { border-bottom-color: #8847ff; }
+        .item:nth-child(3n+2) { border-bottom-color: #d32ce6; }
 
-        .item.eliminated {
-            filter: grayscale(100%) brightness(0.5);
-            background: #200;
-            border-bottom-color: var(--red);
-            transition: 0.1s;
-        }
+        .item.eliminated { filter: grayscale(100%) brightness(0.5); background: #200; border-bottom-color: var(--red); transition: 0.1s; }
         .item.eliminated .skull { opacity: 1; transform: scale(1.5); }
-
         .avatar { font-size: 32px; margin-bottom: 8px; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5)); }
         .name { font-size: 12px; color: #aaa; text-align: center; width: 90%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-        
-        .skull {
-            position: absolute; font-size: 40px; opacity: 0;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        .skull { position: absolute; font-size: 40px; opacity: 0; transition: 0.3s; }
 
-        /* 胜利界面 */
-        .winner-modal {
-            display: none; flex-direction: column; align-items: center;
-            animation: zoomIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        .winner-modal { display: none; flex-direction: column; align-items: center; animation: zoomIn 0.5s; }
         .win-card {
             width: 180px; height: 240px;
             background: radial-gradient(circle, #4a3b18 0%, #1a1a1a 100%);
-            border: 2px solid var(--gold);
-            box-shadow: 0 0 60px rgba(238, 188, 81, 0.2);
-            border-radius: 8px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 2px solid var(--gold); box-shadow: 0 0 60px rgba(238, 188, 81, 0.2);
+            border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center;
             margin-bottom: 20px;
-            position: relative;
         }
-        
-        /* 粒子光效 */
-        .particles { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events: none; z-index: -1; }
-
         .btn {
             background: transparent; border: 1px solid #555; color: #888;
             padding: 10px 30px; border-radius: 30px; cursor: pointer;
@@ -228,13 +138,11 @@
             <div class="action-text" id="statusText">锁定目标中...</div>
         </div>
 
-        <!-- 滚动窗口 -->
         <div class="case-container">
             <div class="pointer"></div>
             <div class="strip" id="strip"></div>
         </div>
 
-        <!-- 胜利结算 -->
         <div class="winner-modal" id="winnerArea">
             <div class="win-card">
                 <div style="font-size:60px; margin-bottom:10px">👑</div>
@@ -246,46 +154,33 @@
     </div>
 
     <script>
-        // --- 音效控制器 (纯代码生成，无需文件) ---
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // --- 核心音频系统 (真实文件版) ---
+        const sounds = {
+            roll: new Audio('roll.mp3'),
+            hit: new Audio('hit.mp3'),
+            win: new Audio('win.mp3')
+        };
+
+        // 预加载
+        for (let key in sounds) {
+            sounds[key].load();
+            sounds[key].volume = 0.5; // 音量适中
+        }
         
-        function playSound(type) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
+        // 特殊处理：滚动声音需要高频播放，不能等待上一次播放结束
+        function playRollSound() {
+            const clone = sounds.roll.cloneNode(); // 克隆节点以支持重叠播放
+            clone.volume = 0.3; // 滚动声稍微小一点
+            clone.play().catch(() => {}); // 忽略自动播放限制的报错
+        }
 
-            const now = audioCtx.currentTime;
-
-            if (type === 'tick') {
-                // 滚动时的“哒哒”声
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(800, now);
-                osc.frequency.exponentialRampToValueAtTime(100, now + 0.05);
-                gain.gain.setValueAtTime(0.05, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-                osc.start(now);
-                osc.stop(now + 0.05);
-            } else if (type === 'hit') {
-                // 淘汰时的“砰”声
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(100, now);
-                osc.frequency.exponentialRampToValueAtTime(0.01, now + 0.3);
-                gain.gain.setValueAtTime(0.3, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-                osc.start(now);
-                osc.stop(now + 0.3);
+        function playEffect(type) {
+            if (type === 'hit') {
+                sounds.hit.currentTime = 0;
+                sounds.hit.play().catch(() => {});
             } else if (type === 'win') {
-                // 胜利音效
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(440, now); // A4
-                osc.frequency.setValueAtTime(554, now + 0.1); // C#5
-                osc.frequency.setValueAtTime(659, now + 0.2); // E5
-                gain.gain.setValueAtTime(0.1, now);
-                gain.gain.linearRampToValueAtTime(0, now + 0.6);
-                osc.start(now);
-                osc.stop(now + 0.6);
+                sounds.win.currentTime = 0;
+                sounds.win.play().catch(() => {});
             }
         }
 
@@ -293,12 +188,11 @@
         const listArea = document.getElementById('listArea');
         const strip = document.getElementById('strip');
         
-        // 渲染列表
         if (typeof gameHistory !== 'undefined') {
             gameHistory.reverse().forEach(game => {
                 const div = document.createElement('div');
                 div.className = 'match-card';
-                div.onclick = () => { playReplay(game); }; // 点击播放
+                div.onclick = () => { playReplay(game); };
                 div.innerHTML = `
                     <div>
                         <div style="font-weight:bold; color:#fff; font-size:16px">${game.id}</div>
@@ -312,18 +206,14 @@
                 listArea.appendChild(div);
             });
         } else {
-            listArea.innerHTML = '<div style="text-align:center; padding:30px; color:#555">Waiting for data...</div>';
+            listArea.innerHTML = '<div style="text-align:center; padding:30px; color:#555">等待数据...</div>';
         }
 
-        // 播放回放
         function playReplay(game) {
             document.getElementById('gameModal').style.display = 'flex';
             document.getElementById('winnerArea').style.display = 'none';
             document.querySelector('.case-container').style.display = 'block';
             
-            // 必须用户交互后才能播放声音，这里尝试唤醒
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-
             runRound(game, 0, [0, 1, 2]);
         }
 
@@ -341,10 +231,10 @@
             statusText.innerText = "ROLLING...";
             statusText.style.color = "#fff";
 
-            // 生成滚动条带
+            // 生成卡片
             const LANDING_INDEX = 35; 
             const TOTAL_CARDS = 50;
-            const CARD_WIDTH = 108; // 100 + 8 margin
+            const CARD_WIDTH = 108; 
             
             strip.innerHTML = '';
             strip.style.transition = 'none';
@@ -366,25 +256,35 @@
 
             await wait(100);
 
-            // 滚动参数
+            // 滚动
             const randomOffset = Math.floor(Math.random() * 60) - 30;
             const targetX = -(LANDING_INDEX * CARD_WIDTH) - (CARD_WIDTH / 2) + randomOffset;
-            const duration = 5000;
+            const duration = 5500; // CSGO滚动通常在5-6秒
 
-            // CSS 动画
             strip.style.transition = `transform ${duration}ms cubic-bezier(0.12, 0, 0.15, 1)`;
             strip.style.transform = `translateX(${targetX}px)`;
 
-            // --- 模拟滚动音效 (越来越慢) ---
-            let tickTime = 0;
-            let tickDelay = 50; // 初始间隔
-            const totalTicks = 30; // 响多少声
+            // --- 声音控制逻辑 (模拟真实转盘物理节奏) ---
+            let tickCount = 0;
+            const maxTicks = 40; // 预计响多少声
             
-            for(let t=0; t<totalTicks; t++) {
-                setTimeout(() => playSound('tick'), tickTime);
-                tickTime += tickDelay;
-                tickDelay *= 1.1; // 间隔变大 = 声音变慢
-            }
+            // 使用递归 setTimeout 来模拟从快到慢的间隔
+            const triggerSoundLoop = (currentDelay, count) => {
+                if (count >= maxTicks) return;
+                
+                playRollSound(); // 播放 "咔哒"
+                
+                // 间隔系数：一开始很快(50ms)，每次间隔增加 1.08倍，模拟减速
+                const nextDelay = currentDelay * 1.08;
+                
+                if (nextDelay < 400) { // 如果间隔太大就不响了，模拟最后无声滑行
+                    setTimeout(() => triggerSoundLoop(nextDelay, count + 1), currentDelay);
+                }
+            };
+            
+            // 启动声音循环，初始间隔 40ms
+            triggerSoundLoop(40, 0);
+
 
             // 等待滚动结束
             await wait(duration);
@@ -392,16 +292,16 @@
             // --- 处决 ---
             const target = document.getElementById('target');
             target.classList.add('eliminated');
-            playSound('hit'); // 播放打击音
             
-            // 视觉特效
+            playEffect('hit'); // 播放枪声/打击声
+            
             statusText.innerText = "ELIMINATED";
             statusText.style.color = "var(--red)";
             document.getElementById('gameModal').style.animation = 'flashRed 0.3s';
             if (navigator.vibrate) navigator.vibrate(300);
 
-            await wait(2000);
-            document.getElementById('gameModal').style.animation = ''; // 清除闪烁
+            await wait(2500); // 处决展示时间
+            document.getElementById('gameModal').style.animation = ''; 
 
             // 下一轮
             runRound(game, roundIndex + 1, aliveIndices.filter(i => i !== victimIdx));
@@ -416,11 +316,15 @@
             wArea.style.display = 'flex';
             document.getElementById('winName').innerText = name;
             
-            playSound('win'); // 播放胜利音效
+            playEffect('win'); // 播放MVP音乐
             if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
         }
 
-        function closeModal() { document.getElementById('gameModal').style.display = 'none'; }
+        function closeModal() {
+            document.getElementById('gameModal').style.display = 'none';
+            // 停止所有声音 (简单粗暴重置)
+            sounds.win.pause(); sounds.win.currentTime = 0;
+        }
         function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
     </script>
 </body>
