@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>后台生成器</title>
+    <style>
+        body { background: #222; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        input { padding: 10px; margin: 5px; background: #000; color: #fff; border: 1px solid #555; }
+        button { padding: 10px 20px; background: gold; border: none; font-weight: bold; cursor: pointer; margin-top: 10px;}
+        #result { margin-top: 20px; padding: 20px; background: #000; border: 1px dashed #666; width: 80%; word-break: break-all; font-family: monospace; display: none;}
+        .card { display: inline-block; width: 80px; height: 100px; background: #444; margin: 10px; text-align: center; line-height: 100px; border: 2px solid #666;}
+        .dead { background: #500; border-color: red; }
+    </style>
+</head>
+<body>
+    <h1>🔒 管理员控制台</h1>
+    <div>
+        <input type="text" id="id" placeholder="期数 (如: 第002期)">
+        <input type="text" id="p1" placeholder="玩家1">
+        <input type="text" id="p2" placeholder="玩家2">
+        <input type="text" id="p3" placeholder="玩家3">
+    </div>
+    <button onclick="runGame()">⚡ 开始处决并生成代码</button>
+
+    <div id="visual" style="margin: 20px;"></div>
+    
+    <div id="result">
+        <h3 style="color:gold; margin-top:0;">✅ 复制下面的代码添加到 data.js:</h3>
+        <div id="codeBox" style="color: #0f0;"></div>
+    </div>
+
+    <script>
+        function runGame() {
+            const id = document.getElementById('id').value || "测试期";
+            const players = [
+                document.getElementById('p1').value || "A",
+                document.getElementById('p2').value || "B",
+                document.getElementById('p3').value || "C"
+            ];
+
+            // 1. 真正的随机逻辑在这里运行
+            let alive = [0, 1, 2];
+            let outSequence = [];
+
+            // 第一轮淘汰
+            let r1 = Math.floor(Math.random() * alive.length);
+            outSequence.push(alive[r1]);
+            alive.splice(r1, 1);
+
+            // 第二轮淘汰
+            let r2 = Math.floor(Math.random() * alive.length);
+            outSequence.push(alive[r2]);
+            alive.splice(r2, 1);
+
+            // 剩下的就是赢家
+            const winnerIdx = alive[0];
+
+            // 2. 生成可视化结果给管理员看
+            const v = document.getElementById('visual');
+            v.innerHTML = `淘汰顺序: ${players[outSequence[0]]} -> ${players[outSequence[1]]} <br> 🏆 赢家: ${players[winnerIdx]}`;
+
+            // 3. 生成代码
+            const date = new Date().toISOString().split('T')[0];
+            const jsonCode = `{ id: "${id}", players: ${JSON.stringify(players)}, outSequence: ${JSON.stringify(outSequence)}, winnerIdx: ${winnerIdx}, date: "${date}" },`;
+            
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('codeBox').innerText = jsonCode;
+        }
+    </script>
+</body>
+</html>
