@@ -1,6 +1,6 @@
 // --- 🔴 预告位设置 ---
 const teaser = {
-    active: none,             
+    active: null,             
     id: "第002期",            
     prize: "音乐盒 | Knock2 - 冲击星*",  
     date: "2025-11-25"  
@@ -33,4 +33,5 @@ const gameHistory = [
 
     { id: "003期", prize: "音乐盒 | Knock2 - 冲击星*Roll", seed: "Random_9156", players: ["七七七","东方树叶🍃","东方树叶🍃","CaseGo352472","Liar"], outSequence: [2,3,1,4], winnerIdx: 0, date: "2025-11-25" }
 ];
+
 
