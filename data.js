@@ -35,10 +35,11 @@ const gameHistory = [
         outSequence: [2,3,1,4], 
         winnerIdx: 0, 
         date: "2025-11-25" 
-    }
+    },
 
     { id: "第004期", prize: "AK-47 | 幻影破坏者 (久经沙场)", seed: "Random_2736", players: ["what","what","what","what","东方树叶🍃"], outSequence: [4,2,0,3], winnerIdx: 1, date: "2025-11-25" }
 
 ];
+
 
 
