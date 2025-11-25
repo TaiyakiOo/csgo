@@ -1,10 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = {
-    active: false,             
-    id: "第002期",            
-    prize: "音乐盒 | Knock2 - 冲击星*",  
-    date: "2025-11-25"  
-};
+const teaser = { active: true, id: "第004期", prize: "AK-47 | 幻影破坏者 (久经沙场)", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -33,7 +28,7 @@ const gameHistory = [
 
     // 第003期 (你新加的)
     { 
-        id: "003期", 
+        id: "第003期", 
         prize: "音乐盒 | Knock2 - 冲击星*Roll", 
         seed: "Random_9156", 
         players: ["七七七","东方树叶🍃","东方树叶🍃","CaseGo352472","Liar"], 
@@ -43,3 +38,4 @@ const gameHistory = [
     }
 
 ];
+
