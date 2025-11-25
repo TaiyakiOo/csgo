@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CS:GO 饰品大逃杀 | 5人死斗</title>
+    <title>哈基肉的饰品大逃杀 | 5人死斗</title>
     <script src="data.js"></script>
     <style>
         /* --- 核心样式 --- */
@@ -27,27 +27,49 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        .header { text-align: center; margin-bottom: 20px; width: 100%;}
+        /* 头部优化 */
+        .header { text-align: center; margin-bottom: 15px; width: 100%;}
         h1 {
-            margin: 0; font-size: 24px; font-style: italic; text-transform: uppercase;
+            margin: 0; font-size: 26px; font-style: italic; text-transform: uppercase;
             background: linear-gradient(180deg, #fff 0%, #bbb 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
         .subtitle { color: var(--gold); font-size: 11px; letter-spacing: 2px; margin-top: 5px; opacity: 0.8; }
 
-        /* --- 列表样式 --- */
+        /* --- 🔴 新增：跳转 Casego 的黄金按钮 --- */
+        .cta-container { width: 100%; text-align: center; margin-bottom: 25px; }
+        .cta-btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #de9b35 0%, #f0c05a 100%); /* 金色渐变 */
+            color: #1a1a1a;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 15px;
+            box-shadow: 0 0 20px rgba(222, 155, 53, 0.4);
+            transition: transform 0.1s, box-shadow 0.1s;
+            width: 80%; max-width: 300px;
+            border: 1px solid #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-btn:active { transform: scale(0.96); box-shadow: 0 0 10px rgba(222, 155, 53, 0.4); }
+        .cta-btn span { display: block; font-size: 10px; font-weight: normal; margin-top: 2px; opacity: 0.8; }
+        /* 按钮上的光扫过动画 */
+        .cta-btn::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        /* 列表 */
         .history-list { width: 100%; max-width: 500px; padding-bottom: 100px; }
-        
         .match-card {
-            background: rgba(30, 30, 30, 0.6); 
-            border: 1px solid #333; 
-            border-left: 3px solid #555;
-            margin-bottom: 10px; 
-            padding: 12px 15px; 
-            display: flex; align-items: center; 
-            cursor: pointer; transition: 0.2s;
-            border-radius: 4px; position: relative; overflow: hidden;
+            background: rgba(30, 30, 30, 0.6); border: 1px solid #333; border-left: 3px solid #555;
+            margin-bottom: 10px; padding: 12px 15px; display: flex; align-items: center; 
+            cursor: pointer; transition: 0.2s; border-radius: 4px; position: relative; overflow: hidden;
         }
         .match-card:active { transform: scale(0.98); background: #252525; }
 
@@ -61,61 +83,32 @@
         .match-card .seed-info { font-size: 9px; color: #555; margin-top: 2px; font-family: monospace; }
 
         .match-card .right-part {
-            width: 75px; text-align: center;
-            border-left: 1px solid rgba(255,255,255,0.1); padding-left: 10px; flex-shrink: 0;
+            width: 75px; text-align: center; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 10px; flex-shrink: 0;
         }
         .w-label { font-size: 9px; color: #666; display: block; margin-bottom: 2px; }
         .w-name { font-weight: bold; font-size: 16px; font-style: italic; letter-spacing: 2px; color: #777;}
 
-        /* --- 预告卡片样式 (新增) --- */
+        /* 预告卡片 */
         .teaser-card {
-            background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
-            border: 1px dashed var(--gold);
-            margin-bottom: 20px;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            position: relative;
-            animation: breathe 3s infinite;
+            background: linear-gradient(45deg, #1a1a1a, #2a2a2a); border: 1px dashed var(--gold);
+            margin-bottom: 20px; padding: 20px; border-radius: 8px; text-align: center;
+            position: relative; animation: breathe 3s infinite;
         }
-        .teaser-badge {
-            background: var(--gold); color: #000; font-size: 10px; font-weight: bold;
-            padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 10px;
-        }
+        .teaser-badge { background: var(--gold); color: #000; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 10px; }
         .teaser-title { font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 5px; }
         .teaser-prize { font-size: 14px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px;}
         .teaser-date { font-size: 10px; color: #666; margin-top: 10px; }
         .lock-icon { font-size: 24px; margin-bottom: 5px; display: block; }
 
-        /* --- 游戏弹窗 --- */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 100;
-            flex-direction: column; align-items: center; justify-content: center;
-        }
-
+        /* 游戏弹窗 */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; flex-direction: column; align-items: center; justify-content: center; }
         .status-bar { text-align: center; margin-bottom: 20px; width: 100%; min-height: 50px;}
         .action-text { font-size: 20px; font-weight: bold; color: #fff; transition: 0.3s;}
-        
-        .case-container {
-            width: 100%; height: 150px; background: #0b0b0b; position: relative;
-            border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold);
-            margin-bottom: 30px; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8);
-        }
-        .pointer {
-            position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--gold);
-            z-index: 10; transform: translateX(-50%); box-shadow: 0 0 10px var(--gold);
-        }
+        .case-container { width: 100%; height: 150px; background: #0b0b0b; position: relative; border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); margin-bottom: 30px; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
+        .pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--gold); z-index: 10; transform: translateX(-50%); box-shadow: 0 0 10px var(--gold); }
         .strip { display: flex; height: 100%; align-items: center; position: absolute; left: 50%; will-change: transform; }
 
-        .item {
-            width: var(--card-w); height: var(--card-h);
-            background: linear-gradient(135deg, #2b2b2b, #1a1a1a);
-            border-bottom: 4px solid #fff; 
-            margin: 0 3px; flex-shrink: 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative; box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
-        }
+        .item { width: var(--card-w); height: var(--card-h); background: linear-gradient(135deg, #2b2b2b, #1a1a1a); border-bottom: 4px solid #fff; margin: 0 3px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
         .item.eliminated { filter: grayscale(100%) brightness(0.4); background: #220505; border-bottom-color: var(--red) !important; }
         .item.eliminated .skull { opacity: 1; transform: scale(1.4); }
         .avatar { font-size: 28px; margin-bottom: 5px; }
@@ -123,39 +116,20 @@
         .skull { position: absolute; font-size: 36px; opacity: 0; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
         .interaction-area { margin-top: 20px; display: flex; flex-direction: column; align-items: center; }
-        .fire-btn {
-            background: linear-gradient(180deg, #d32f2f 0%, #8a1c1c 100%);
-            border: 2px solid #ff5c5c; color: #fff; width: 140px; height: 140px; border-radius: 50%;
-            font-size: 24px; font-weight: bold; box-shadow: 0 0 30px rgba(211, 47, 47, 0.5);
-            cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: 0.1s; animation: pulse 2s infinite; text-transform: uppercase;
-        }
+        .fire-btn { background: linear-gradient(180deg, #d32f2f 0%, #8a1c1c 100%); border: 2px solid #ff5c5c; color: #fff; width: 140px; height: 140px; border-radius: 50%; font-size: 24px; font-weight: bold; box-shadow: 0 0 30px rgba(211, 47, 47, 0.5); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.1s; animation: pulse 2s infinite; text-transform: uppercase; }
         .fire-btn:active { transform: scale(0.95); background: #500; box-shadow: 0 0 10px rgba(211, 47, 47, 0.8); }
         .fire-btn.disabled { background: #333; border-color: #555; color: #777; pointer-events: none; animation: none; box-shadow: none; }
         .fire-btn span { font-size: 12px; font-weight: normal; margin-top: 5px; opacity: 0.8; }
 
         .winner-modal { display: none; flex-direction: column; align-items: center; animation: zoomIn 0.4s; width: 100%; }
-        .win-card {
-            width: 200px; height: 260px;
-            background: radial-gradient(circle, #4a3b18 0%, #1a1a1a 100%);
-            border: 2px solid var(--gold); box-shadow: 0 0 50px rgba(238, 188, 81, 0.3);
-            border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            margin-bottom: 20px; padding: 20px; box-sizing: border-box;
-        }
+        .win-card { width: 200px; height: 260px; background: radial-gradient(circle, #4a3b18 0%, #1a1a1a 100%); border: 2px solid var(--gold); box-shadow: 0 0 50px rgba(238, 188, 81, 0.3); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; padding: 20px; box-sizing: border-box; }
         .win-card .crown { font-size: 50px; margin-bottom: 5px; }
         .win-card .player-name { color: #fff; font-size: 20px; font-weight: bold; margin-bottom: 20px; }
-        .prize-box {
-            background: rgba(0,0,0,0.3); border: 1px solid #444; border-radius: 4px;
-            padding: 10px; width: 100%; text-align: center;
-        }
+        .prize-box { background: rgba(0,0,0,0.3); border: 1px solid #444; border-radius: 4px; padding: 10px; width: 100%; text-align: center; }
         .prize-label { font-size: 10px; color: #888; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
         .prize-name { color: var(--gold); font-size: 14px; font-weight: bold; line-height: 1.4; }
 
-        .btn {
-            background: transparent; border: 1px solid #555; color: #888;
-            padding: 10px 30px; border-radius: 30px; cursor: pointer;
-            transition: 0.2s; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
-        }
+        .btn { background: transparent; border: 1px solid #555; color: #888; padding: 10px 30px; border-radius: 30px; cursor: pointer; transition: 0.2s; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
         .btn:active { background: #333; color: #fff; }
 
         .fairness-btn { position: fixed; bottom: 20px; font-size: 12px; color: #666; cursor: pointer; text-decoration: underline; z-index: 50; padding: 10px; }
@@ -167,18 +141,26 @@
         @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 30px rgba(211, 47, 47, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(211, 47, 47, 0.8); } 100% { transform: scale(1); box-shadow: 0 0 30px rgba(211, 47, 47, 0.5); } }
         @keyframes flashRed { 0%, 100% { background: rgba(211, 47, 47, 0); } 50% { background: rgba(211, 47, 47, 0.25); } }
         @keyframes breathe { 0%, 100% { box-shadow: 0 0 10px rgba(238, 188, 81, 0.1); border-color: rgba(238, 188, 81, 0.3); } 50% { box-shadow: 0 0 20px rgba(238, 188, 81, 0.3); border-color: rgba(238, 188, 81, 0.8); } }
+        @keyframes shimmer { 0% { left: -100%; } 100% { left: 200%; } }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>CS:GO BATTLE ROYALE</h1>
+        <!-- 更改标题 -->
+        <h1>哈基肉的饰品大逃杀</h1>
         <div class="subtitle">5人死斗 · 胜者通吃</div>
     </div>
 
-    <div class="history-list" id="listArea">
-        <!-- JS 会在这里插入 预告卡片 + 历史列表 -->
+    <!-- 新增：跳转 Casego 的黄金按钮 -->
+    <div class="cta-container">
+        <a href="https://casego.cn/home?Code=HSR91" target="_blank" class="cta-btn">
+            🎟️ 立即前往 Casego 参与
+            <span>点击跳转购票 · 认准哈基肉小店</span>
+        </a>
     </div>
+
+    <div class="history-list" id="listArea"></div>
 
     <div class="fairness-btn" onclick="showInfo()">⚖️ 算法公平性声明</div>
 
@@ -267,11 +249,10 @@
         const listArea = document.getElementById('listArea');
         const strip = document.getElementById('strip');
         
-        // --- 核心改动：渲染列表时检查 Teaser ---
         function renderList() {
             listArea.innerHTML = '';
             
-            // 1. 如果有预告，先显示预告卡片
+            // 显示预告
             if (typeof teaser !== 'undefined' && teaser && teaser.active) {
                 const tDiv = document.createElement('div');
                 tDiv.className = 'teaser-card';
@@ -285,7 +266,7 @@
                 listArea.appendChild(tDiv);
             }
 
-            // 2. 渲染历史列表
+            // 显示历史列表
             if (typeof gameHistory !== 'undefined') {
                 gameHistory.reverse().forEach(game => {
                     const seedText = game.seed ? `Seed: ${game.seed}` : "Seed: Verified";
