@@ -36,7 +36,7 @@
         }
         .subtitle { color: var(--gold); font-size: 11px; letter-spacing: 2px; margin-top: 5px; opacity: 0.8; }
 
-        /* --- 列表样式 (已更新对齐逻辑) --- */
+        /* --- 列表样式 --- */
         .history-list { width: 100%; max-width: 500px; padding-bottom: 100px; }
         
         .match-card {
@@ -45,7 +45,7 @@
             border-left: 3px solid #555;
             margin-bottom: 10px; 
             padding: 12px 15px; 
-            display: flex; /* Flex布局 */
+            display: flex; 
             align-items: center; 
             cursor: pointer; 
             transition: 0.2s;
@@ -54,10 +54,10 @@
         }
         .match-card:active { transform: scale(0.98); background: #252525; }
 
-        /* 左侧信息区 (自适应) */
+        /* 左侧信息区 */
         .match-card .left-part {
-            flex: 1; /* 占满剩余空间 */
-            min-width: 0; /* 防止文字溢出 */
+            flex: 1; 
+            min-width: 0; 
             padding-right: 10px;
         }
         .match-card .info { font-size: 14px; color: #fff; font-weight: bold; }
@@ -68,17 +68,16 @@
         }
         .match-card .seed-info { font-size: 9px; color: #555; margin-top: 2px; font-family: monospace; }
 
-        /* 右侧冠军区 (固定宽度，绝对整齐) */
+        /* 右侧冠军区 */
         .match-card .right-part {
-            width: 75px; /* 固定宽度 */
+            width: 75px; 
             text-align: center;
-            border-left: 1px solid rgba(255,255,255,0.1); /* 竖线分隔 */
+            border-left: 1px solid rgba(255,255,255,0.1); 
             padding-left: 10px;
             flex-shrink: 0;
         }
         .w-label { font-size: 9px; color: #666; display: block; margin-bottom: 2px; }
         .w-name { 
-            color: #777; /* 未揭晓时是灰色 */
             font-weight: bold; font-size: 16px; 
             font-style: italic; letter-spacing: 2px;
         }
@@ -299,35 +298,49 @@
         const listArea = document.getElementById('listArea');
         const strip = document.getElementById('strip');
         
-        // --- 渲染列表逻辑 (已修改为隐藏冠军) ---
-        if (typeof gameHistory !== 'undefined') {
-            gameHistory.reverse().forEach(game => {
-                const seedText = game.seed ? `Seed: ${game.seed}` : "Seed: Verified";
-                const prizeText = game.prize ? game.prize : "神秘饰品";
-                
-                const div = document.createElement('div');
-                div.className = 'match-card';
-                div.onclick = () => { playReplay(game); };
-                
-                div.innerHTML = `
-                    <div class="left-part">
-                        <div class="info">${game.id}</div>
-                        <div class="prize-tag">📦 ${prizeText}</div>
-                        <div class="seed-info">${seedText}</div>
-                    </div>
+        // --- 1. 渲染列表逻辑 (含本地缓存检查) ---
+        function renderList() {
+            listArea.innerHTML = ''; // 清空当前列表
+            
+            if (typeof gameHistory !== 'undefined') {
+                gameHistory.reverse().forEach(game => {
+                    const seedText = game.seed ? `Seed: ${game.seed}` : "Seed: Verified";
+                    const prizeText = game.prize ? game.prize : "神秘饰品";
                     
-                    <div class="right-part">
-                        <div class="w-label">Winner</div>
-                        <div class="w-name">???</div> <!-- 防剧透，统一显示问号 -->
-                    </div>
-                `;
-                listArea.appendChild(div);
-            });
-        } else {
-            listArea.innerHTML = '<div style="text-align:center; padding:30px; color:#555">暂无数据</div>';
+                    // 检查本地缓存：这期游戏看过了吗？
+                    const isWatched = localStorage.getItem('watched_' + game.id);
+                    
+                    // 如果看过了，显示真名(金色)；如果没看过，显示 ???(灰色)
+                    const winnerDisplayName = isWatched ? game.players[game.winnerIdx] : "???";
+                    const winnerColor = isWatched ? "var(--gold)" : "#777";
+                    
+                    const div = document.createElement('div');
+                    div.className = 'match-card';
+                    div.onclick = () => { playReplay(game); };
+                    
+                    div.innerHTML = `
+                        <div class="left-part">
+                            <div class="info">${game.id}</div>
+                            <div class="prize-tag">📦 ${prizeText}</div>
+                            <div class="seed-info">${seedText}</div>
+                        </div>
+                        
+                        <div class="right-part">
+                            <div class="w-label">Winner</div>
+                            <div class="w-name" style="color:${winnerColor}">${winnerDisplayName}</div>
+                        </div>
+                    `;
+                    listArea.appendChild(div);
+                });
+            } else {
+                listArea.innerHTML = '<div style="text-align:center; padding:30px; color:#555">暂无数据</div>';
+            }
         }
+        
+        // 页面加载时渲染一次
+        renderList();
 
-        // --- 全局变量用于控制手动流程 ---
+        // --- 全局变量 ---
         let currentGame = null;
         let currentRound = 0;
         let currentAlive = [];
@@ -479,6 +492,12 @@
             document.getElementById('winName').innerText = name;
             document.getElementById('winPrize').innerText = prize ? prize : "神秘大奖";
             
+            // --- 关键修改：记录已读状态 ---
+            // 当胜利弹窗展示时，在本地缓存里记一笔
+            localStorage.setItem('watched_' + currentGame.id, 'true');
+            // 重新渲染列表，这样关闭弹窗后看到的列表就已经更新了
+            renderList();
+
             playWinSound();
             if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
         }
