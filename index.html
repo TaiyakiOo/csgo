@@ -45,21 +45,13 @@
             border-left: 3px solid #555;
             margin-bottom: 10px; 
             padding: 12px 15px; 
-            display: flex; 
-            align-items: center; 
-            cursor: pointer; 
-            transition: 0.2s;
-            border-radius: 4px; 
-            position: relative; overflow: hidden;
+            display: flex; align-items: center; 
+            cursor: pointer; transition: 0.2s;
+            border-radius: 4px; position: relative; overflow: hidden;
         }
         .match-card:active { transform: scale(0.98); background: #252525; }
 
-        /* 左侧信息区 */
-        .match-card .left-part {
-            flex: 1; 
-            min-width: 0; 
-            padding-right: 10px;
-        }
+        .match-card .left-part { flex: 1; min-width: 0; padding-right: 10px; }
         .match-card .info { font-size: 14px; color: #fff; font-weight: bold; }
         .match-card .prize-tag { 
             font-size: 11px; color: var(--gold); margin-top: 4px; 
@@ -68,19 +60,32 @@
         }
         .match-card .seed-info { font-size: 9px; color: #555; margin-top: 2px; font-family: monospace; }
 
-        /* 右侧冠军区 */
         .match-card .right-part {
-            width: 75px; 
-            text-align: center;
-            border-left: 1px solid rgba(255,255,255,0.1); 
-            padding-left: 10px;
-            flex-shrink: 0;
+            width: 75px; text-align: center;
+            border-left: 1px solid rgba(255,255,255,0.1); padding-left: 10px; flex-shrink: 0;
         }
         .w-label { font-size: 9px; color: #666; display: block; margin-bottom: 2px; }
-        .w-name { 
-            font-weight: bold; font-size: 16px; 
-            font-style: italic; letter-spacing: 2px;
+        .w-name { font-weight: bold; font-size: 16px; font-style: italic; letter-spacing: 2px; color: #777;}
+
+        /* --- 预告卡片样式 (新增) --- */
+        .teaser-card {
+            background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+            border: 1px dashed var(--gold);
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            animation: breathe 3s infinite;
         }
+        .teaser-badge {
+            background: var(--gold); color: #000; font-size: 10px; font-weight: bold;
+            padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 10px;
+        }
+        .teaser-title { font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 5px; }
+        .teaser-prize { font-size: 14px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px;}
+        .teaser-date { font-size: 10px; color: #666; margin-top: 10px; }
+        .lock-icon { font-size: 24px; margin-bottom: 5px; display: block; }
 
         /* --- 游戏弹窗 --- */
         .modal {
@@ -103,7 +108,6 @@
         }
         .strip { display: flex; height: 100%; align-items: center; position: absolute; left: 50%; will-change: transform; }
 
-        /* 卡片样式 */
         .item {
             width: var(--card-w); height: var(--card-h);
             background: linear-gradient(135deg, #2b2b2b, #1a1a1a);
@@ -118,35 +122,18 @@
         .name { font-size: 11px; color: #ddd; text-align: center; width: 95%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 500;}
         .skull { position: absolute; font-size: 36px; opacity: 0; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-        /* 交互按钮区域 */
-        .interaction-area {
-            margin-top: 20px;
-            display: flex; flex-direction: column; align-items: center;
-        }
-
-        /* 开火按钮 */
+        .interaction-area { margin-top: 20px; display: flex; flex-direction: column; align-items: center; }
         .fire-btn {
             background: linear-gradient(180deg, #d32f2f 0%, #8a1c1c 100%);
-            border: 2px solid #ff5c5c;
-            color: #fff;
-            width: 140px; height: 140px;
-            border-radius: 50%;
-            font-size: 24px; font-weight: bold;
-            box-shadow: 0 0 30px rgba(211, 47, 47, 0.5);
-            cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: 0.1s;
-            animation: pulse 2s infinite;
-            text-transform: uppercase;
+            border: 2px solid #ff5c5c; color: #fff; width: 140px; height: 140px; border-radius: 50%;
+            font-size: 24px; font-weight: bold; box-shadow: 0 0 30px rgba(211, 47, 47, 0.5);
+            cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: 0.1s; animation: pulse 2s infinite; text-transform: uppercase;
         }
         .fire-btn:active { transform: scale(0.95); background: #500; box-shadow: 0 0 10px rgba(211, 47, 47, 0.8); }
-        .fire-btn.disabled {
-            background: #333; border-color: #555; color: #777;
-            pointer-events: none; animation: none; box-shadow: none;
-        }
+        .fire-btn.disabled { background: #333; border-color: #555; color: #777; pointer-events: none; animation: none; box-shadow: none; }
         .fire-btn span { font-size: 12px; font-weight: normal; margin-top: 5px; opacity: 0.8; }
 
-        /* 胜利界面 */
         .winner-modal { display: none; flex-direction: column; align-items: center; animation: zoomIn 0.4s; width: 100%; }
         .win-card {
             width: 200px; height: 260px;
@@ -157,7 +144,6 @@
         }
         .win-card .crown { font-size: 50px; margin-bottom: 5px; }
         .win-card .player-name { color: #fff; font-size: 20px; font-weight: bold; margin-bottom: 20px; }
-        
         .prize-box {
             background: rgba(0,0,0,0.3); border: 1px solid #444; border-radius: 4px;
             padding: 10px; width: 100%; text-align: center;
@@ -172,29 +158,15 @@
         }
         .btn:active { background: #333; color: #fff; }
 
-        /* --- 公平性声明 --- */
-        .fairness-btn {
-            position: fixed; bottom: 20px; font-size: 12px; color: #666;
-            cursor: pointer; text-decoration: underline; z-index: 50; padding: 10px;
-        }
-        .info-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 200;
-            flex-direction: column; align-items: center; justify-content: center;
-            padding: 20px; box-sizing: border-box; 
-        }
-        .info-box {
-            background: #222; border: 1px solid #444; 
-            padding: 20px; border-radius: 8px;
-            width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto;
-            color: #ccc; font-size: 14px; line-height: 1.6;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+        .fairness-btn { position: fixed; bottom: 20px; font-size: 12px; color: #666; cursor: pointer; text-decoration: underline; z-index: 50; padding: 10px; }
+        .info-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 200; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+        .info-box { background: #222; border: 1px solid #444; padding: 20px; border-radius: 8px; width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto; color: #ccc; font-size: 14px; line-height: 1.6; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .info-title { color: var(--gold); font-size: 18px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #444; padding-bottom: 10px;}
 
         @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 30px rgba(211, 47, 47, 0.5); } 50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(211, 47, 47, 0.8); } 100% { transform: scale(1); box-shadow: 0 0 30px rgba(211, 47, 47, 0.5); } }
         @keyframes flashRed { 0%, 100% { background: rgba(211, 47, 47, 0); } 50% { background: rgba(211, 47, 47, 0.25); } }
+        @keyframes breathe { 0%, 100% { box-shadow: 0 0 10px rgba(238, 188, 81, 0.1); border-color: rgba(238, 188, 81, 0.3); } 50% { box-shadow: 0 0 20px rgba(238, 188, 81, 0.3); border-color: rgba(238, 188, 81, 0.8); } }
     </style>
 </head>
 <body>
@@ -204,11 +176,12 @@
         <div class="subtitle">5人死斗 · 胜者通吃</div>
     </div>
 
-    <div class="history-list" id="listArea"></div>
+    <div class="history-list" id="listArea">
+        <!-- JS 会在这里插入 预告卡片 + 历史列表 -->
+    </div>
 
     <div class="fairness-btn" onclick="showInfo()">⚖️ 算法公平性声明</div>
 
-    <!-- 游戏弹窗 -->
     <div class="modal" id="gameModal">
         <div class="status-bar">
             <div style="font-size:12px; color:#666; margin-bottom:5px" id="roundTag">READY TO START</div>
@@ -220,7 +193,6 @@
             <div class="strip" id="strip"></div>
         </div>
         
-        <!-- 交互按钮区域 -->
         <div class="interaction-area" id="actionArea">
             <button class="fire-btn" id="fireBtn" onclick="nextRound()">
                 FIRE
@@ -228,7 +200,6 @@
             </button>
         </div>
 
-        <!-- 胜利结算 -->
         <div class="winner-modal" id="winnerArea">
             <div class="win-card">
                 <div class="crown">👑</div>
@@ -243,7 +214,6 @@
         </div>
     </div>
 
-    <!-- 公平性说明弹窗 -->
     <div class="info-modal" id="infoModal">
         <div class="info-box">
             <div class="info-title">🛡️ 随机算法与公平性声明</div>
@@ -265,7 +235,6 @@
         const rarityColors = ['#5e98d9', '#4b69ff', '#8847ff', '#d32ce6', '#eb4b4b'];
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
-        // 音效部分
         function playClickSound() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const t = audioCtx.currentTime;
@@ -298,19 +267,30 @@
         const listArea = document.getElementById('listArea');
         const strip = document.getElementById('strip');
         
-        // --- 1. 渲染列表逻辑 (含本地缓存检查) ---
+        // --- 核心改动：渲染列表时检查 Teaser ---
         function renderList() {
-            listArea.innerHTML = ''; // 清空当前列表
+            listArea.innerHTML = '';
             
+            // 1. 如果有预告，先显示预告卡片
+            if (typeof teaser !== 'undefined' && teaser && teaser.active) {
+                const tDiv = document.createElement('div');
+                tDiv.className = 'teaser-card';
+                tDiv.innerHTML = `
+                    <div class="lock-icon">🔒</div>
+                    <div class="teaser-badge">NEXT ROUND</div>
+                    <div class="teaser-title">${teaser.id}</div>
+                    <div class="teaser-prize">📦 ${teaser.prize}</div>
+                    <div class="teaser-date">即将上线</div>
+                `;
+                listArea.appendChild(tDiv);
+            }
+
+            // 2. 渲染历史列表
             if (typeof gameHistory !== 'undefined') {
                 gameHistory.reverse().forEach(game => {
                     const seedText = game.seed ? `Seed: ${game.seed}` : "Seed: Verified";
                     const prizeText = game.prize ? game.prize : "神秘饰品";
-                    
-                    // 检查本地缓存：这期游戏看过了吗？
                     const isWatched = localStorage.getItem('watched_' + game.id);
-                    
-                    // 如果看过了，显示真名(金色)；如果没看过，显示 ???(灰色)
                     const winnerDisplayName = isWatched ? game.players[game.winnerIdx] : "???";
                     const winnerColor = isWatched ? "var(--gold)" : "#777";
                     
@@ -324,7 +304,6 @@
                             <div class="prize-tag">📦 ${prizeText}</div>
                             <div class="seed-info">${seedText}</div>
                         </div>
-                        
                         <div class="right-part">
                             <div class="w-label">Winner</div>
                             <div class="w-name" style="color:${winnerColor}">${winnerDisplayName}</div>
@@ -333,14 +312,12 @@
                     listArea.appendChild(div);
                 });
             } else {
-                listArea.innerHTML = '<div style="text-align:center; padding:30px; color:#555">暂无数据</div>';
+                listArea.innerHTML += '<div style="text-align:center; padding:30px; color:#555">暂无历史数据</div>';
             }
         }
         
-        // 页面加载时渲染一次
         renderList();
 
-        // --- 全局变量 ---
         let currentGame = null;
         let currentRound = 0;
         let currentAlive = [];
@@ -492,10 +469,7 @@
             document.getElementById('winName').innerText = name;
             document.getElementById('winPrize').innerText = prize ? prize : "神秘大奖";
             
-            // --- 关键修改：记录已读状态 ---
-            // 当胜利弹窗展示时，在本地缓存里记一笔
             localStorage.setItem('watched_' + currentGame.id, 'true');
-            // 重新渲染列表，这样关闭弹窗后看到的列表就已经更新了
             renderList();
 
             playWinSound();
