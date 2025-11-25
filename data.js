@@ -1,19 +1,31 @@
-// 这里存储所有的历史记录
+// --- 🔴 预告位设置 ---
+// 如果有下期预告，请填入信息；如果正式上线了，请改为 null
+const teaser = {
+    active: true,             // true = 显示预告，false = 隐藏
+    id: "第002期",            // 预告的期数
+    prize: "音乐盒 | Knock2 - 冲击星*",  // 预告的奖品
+    date: "2025-11-25"  // 预计时间
+};
+
+// 如果不想显示预告，请写成这样：
+// const teaser = null;
+
+
+// --- 🔵 历史回放列表 ---
 const gameHistory = [
 
-    // 示例数据
+    // 第001期 (已结束)
     { 
         id: "第000期", 
         seed: "CSGO-8888", 
-        prize: "AWP | 二西莫夫 (久经沙场)", 
+        prize: "AWP | 二西莫夫", 
         players: ["玩家A", "玩家B", "玩家C", "玩家D", "玩家E"], 
         outSequence: [0, 1, 3, 4], 
         winnerIdx: 2, 
-        date: "2023-11-25" 
-    }, // <--- 注意这里！加了逗号，下面的数据才能生效
-    
-    // 第001期
-    { 
+        date: "2025-11-24" 
+    }
+
+    // 新数据粘贴在这里...
         id: "第001期", 
         seed: "Internal_Random_3676", 
         prize: "Tec-9 | 遥控 (久经沙场)", 
@@ -21,6 +33,4 @@ const gameHistory = [
         outSequence: [1,2,3,0], 
         winnerIdx: 4, 
         date: "2025-11-24" 
-    } // <--- 最后一个后面可以不加逗号，但加了也没事
-
 ];
