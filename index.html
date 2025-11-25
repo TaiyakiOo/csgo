@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>哈基肉的饰品大逃杀</title>
+    <title>CS:GO 饰品大逃杀 | 5人死斗</title>
     <script src="data.js"></script>
     <style>
-        /* --- 样式部分 --- */
+        /* --- 核心样式 --- */
         :root {
             --bg: #141414;
             --gold: #eebc51;
@@ -36,22 +36,54 @@
         }
         .subtitle { color: var(--gold); font-size: 11px; letter-spacing: 2px; margin-top: 5px; opacity: 0.8; }
 
-        /* 列表 */
+        /* --- 列表样式 (已更新对齐逻辑) --- */
         .history-list { width: 100%; max-width: 500px; padding-bottom: 100px; }
+        
         .match-card {
-            background: rgba(30, 30, 30, 0.6); border: 1px solid #333; border-left: 3px solid #555;
-            margin-bottom: 10px; padding: 15px; display: flex; justify-content: space-between;
-            align-items: center; cursor: pointer; transition: 0.2s;
-            border-radius: 4px; position: relative; overflow: hidden;
+            background: rgba(30, 30, 30, 0.6); 
+            border: 1px solid #333; 
+            border-left: 3px solid #555;
+            margin-bottom: 10px; 
+            padding: 12px 15px; 
+            display: flex; /* Flex布局 */
+            align-items: center; 
+            cursor: pointer; 
+            transition: 0.2s;
+            border-radius: 4px; 
+            position: relative; overflow: hidden;
         }
         .match-card:active { transform: scale(0.98); background: #252525; }
-        .match-card .info { font-size: 14px; color: #fff; font-weight: bold; }
-        .match-card .prize-tag { font-size: 11px; color: var(--gold); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
-        .match-card .seed-info { font-size: 9px; color: #555; margin-top: 2px; font-family: monospace; }
-        .w-name { color: #fff; font-weight: bold; font-size: 14px; text-align: right;}
-        .w-label { font-size: 9px; color: #666; display: block; }
 
-        /* 游戏弹窗 */
+        /* 左侧信息区 (自适应) */
+        .match-card .left-part {
+            flex: 1; /* 占满剩余空间 */
+            min-width: 0; /* 防止文字溢出 */
+            padding-right: 10px;
+        }
+        .match-card .info { font-size: 14px; color: #fff; font-weight: bold; }
+        .match-card .prize-tag { 
+            font-size: 11px; color: var(--gold); margin-top: 4px; 
+            text-transform: uppercase; letter-spacing: 1px; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
+        .match-card .seed-info { font-size: 9px; color: #555; margin-top: 2px; font-family: monospace; }
+
+        /* 右侧冠军区 (固定宽度，绝对整齐) */
+        .match-card .right-part {
+            width: 75px; /* 固定宽度 */
+            text-align: center;
+            border-left: 1px solid rgba(255,255,255,0.1); /* 竖线分隔 */
+            padding-left: 10px;
+            flex-shrink: 0;
+        }
+        .w-label { font-size: 9px; color: #666; display: block; margin-bottom: 2px; }
+        .w-name { 
+            color: #777; /* 未揭晓时是灰色 */
+            font-weight: bold; font-size: 16px; 
+            font-style: italic; letter-spacing: 2px;
+        }
+
+        /* --- 游戏弹窗 --- */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 100;
@@ -93,7 +125,7 @@
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* 巨大的开火按钮 */
+        /* 开火按钮 */
         .fire-btn {
             background: linear-gradient(180deg, #d32f2f 0%, #8a1c1c 100%);
             border: 2px solid #ff5c5c;
@@ -141,7 +173,7 @@
         }
         .btn:active { background: #333; color: #fff; }
 
-        /* 公平性 */
+        /* --- 公平性声明 --- */
         .fairness-btn {
             position: fixed; bottom: 20px; font-size: 12px; color: #666;
             cursor: pointer; text-decoration: underline; z-index: 50; padding: 10px;
@@ -234,6 +266,7 @@
         const rarityColors = ['#5e98d9', '#4b69ff', '#8847ff', '#d32ce6', '#eb4b4b'];
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
+        // 音效部分
         function playClickSound() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const t = audioCtx.currentTime;
@@ -266,6 +299,7 @@
         const listArea = document.getElementById('listArea');
         const strip = document.getElementById('strip');
         
+        // --- 渲染列表逻辑 (已修改为隐藏冠军) ---
         if (typeof gameHistory !== 'undefined') {
             gameHistory.reverse().forEach(game => {
                 const seedText = game.seed ? `Seed: ${game.seed}` : "Seed: Verified";
@@ -274,15 +308,17 @@
                 const div = document.createElement('div');
                 div.className = 'match-card';
                 div.onclick = () => { playReplay(game); };
+                
                 div.innerHTML = `
-                    <div>
+                    <div class="left-part">
                         <div class="info">${game.id}</div>
                         <div class="prize-tag">📦 ${prizeText}</div>
                         <div class="seed-info">${seedText}</div>
                     </div>
-                    <div>
+                    
+                    <div class="right-part">
                         <div class="w-label">Winner</div>
-                        <div class="w-name">👑 ${game.players[game.winnerIdx]}</div>
+                        <div class="w-name">???</div> <!-- 防剧透，统一显示问号 -->
                     </div>
                 `;
                 listArea.appendChild(div);
@@ -301,30 +337,24 @@
             document.getElementById('gameModal').style.display = 'flex';
             document.getElementById('winnerArea').style.display = 'none';
             document.querySelector('.case-container').style.display = 'block';
-            document.getElementById('actionArea').style.display = 'flex'; // 显示开火按钮
+            document.getElementById('actionArea').style.display = 'flex'; 
             
-            // 初始化游戏状态
             currentGame = game;
             currentRound = 0;
             currentAlive = game.players.map((_, i) => i);
             isSpinning = false;
 
-            // 重置UI
             enableFireBtn(true, "START");
             document.getElementById('roundTag').innerText = "READY";
             document.getElementById('statusText').innerText = "等待开火...";
             
-            // 渲染初始静态条带（随便显示一些人）
             renderStaticStrip();
         }
 
-        // 渲染静止的条带
         function renderStaticStrip() {
             strip.innerHTML = '';
             strip.style.transition = 'none';
             strip.style.transform = `translateX(0px)`;
-            
-            // 初始显示：简单展示5个玩家
             for (let i = 0; i < 7; i++) {
                 const pIndex = i % 5;
                 const item = createItem(pIndex, currentGame);
@@ -332,26 +362,18 @@
             }
         }
 
-        // 按钮点击事件
         function nextRound() {
-            if (isSpinning) return; // 防止连点
-            
-            // 如果已经结束
+            if (isSpinning) return; 
             if (currentRound >= currentGame.outSequence.length) {
                 showWinner(currentGame.players[currentGame.winnerIdx], currentGame.prize);
                 return;
             }
-
-            // 开始这一轮
             runRoundLogic();
         }
 
-        // 运行一轮的逻辑
         async function runRoundLogic() {
             isSpinning = true;
             enableFireBtn(false, "ROLLING...");
-            
-            // 唤醒音频
             if (audioCtx.state === 'suspended') audioCtx.resume();
 
             const victimIdx = currentGame.outSequence[currentRound];
@@ -360,7 +382,6 @@
             document.getElementById('statusText').innerText = "锁定目标...";
             document.getElementById('statusText').style.color = "#fff";
 
-            // 生成滚动条
             const LANDING_INDEX = 35; 
             const TOTAL_CARDS = 50;
             const CARD_WIDTH = 96; 
@@ -370,25 +391,21 @@
             strip.style.transform = `translateX(0px)`;
 
             for (let i = 0; i < TOTAL_CARDS; i++) {
-                // 决定这个格子放哪个玩家
-                // 如果是目标位置，必须放倒霉蛋
                 let pIndex = (i === LANDING_INDEX) ? victimIdx : currentAlive[Math.floor(Math.random() * currentAlive.length)];
-                
                 const item = createItem(pIndex, currentGame);
                 if (i === LANDING_INDEX) item.id = 'target';
                 strip.appendChild(item);
             }
 
-            await wait(50); // 稍等渲染
+            await wait(50);
 
             const randomOffset = Math.floor(Math.random() * 50) - 25;
             const targetX = -(LANDING_INDEX * CARD_WIDTH) - (CARD_WIDTH / 2) + randomOffset;
-            const duration = 3500; // 3.5秒
+            const duration = 3500; 
 
             strip.style.transition = `transform ${duration}ms cubic-bezier(0.15, 0, 0.2, 1)`;
             strip.style.transform = `translateX(${targetX}px)`;
 
-            // 声音
             let currentDelay = 50; 
             let timeElapsed = 0;
             const tickLoop = () => {
@@ -402,7 +419,6 @@
 
             await wait(duration);
 
-            // 处决
             const target = document.getElementById('target');
             target.classList.add('eliminated');
             playThudSound();
@@ -412,20 +428,16 @@
             document.getElementById('gameModal').style.animation = 'flashRed 0.3s';
             if (navigator.vibrate) navigator.vibrate(300);
 
-            // 更新状态
             currentAlive = currentAlive.filter(i => i !== victimIdx);
             currentRound++;
 
             await wait(1000);
             document.getElementById('gameModal').style.animation = ''; 
             
-            // 准备下一轮或结束
             isSpinning = false;
             if (currentRound >= currentGame.outSequence.length) {
-                // 如果是最后一轮结束，直接展示赢家
                 showWinner(currentGame.players[currentGame.winnerIdx], currentGame.prize);
             } else {
-                // 否则按钮亮起，等待下一次点击
                 enableFireBtn(true, "FIRE AGAIN");
                 document.getElementById('statusText').innerText = "等待处决指令...";
                 document.getElementById('statusText').style.color = "#fff";
@@ -458,7 +470,7 @@
 
         function showWinner(name, prize) {
             document.querySelector('.case-container').style.display = 'none';
-            document.getElementById('actionArea').style.display = 'none'; // 隐藏按钮
+            document.getElementById('actionArea').style.display = 'none'; 
             document.getElementById('statusText').innerText = "";
             document.getElementById('roundTag').innerText = "";
             
@@ -478,6 +490,3 @@
     </script>
 </body>
 </html>
-
-
-
