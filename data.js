@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: true, id: "第005期", prize: "引爆器音乐盒集", date: "即将上线" };
+const teaser = { active: false, id: "第005期", prize: "引爆器音乐盒集", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -37,9 +37,12 @@ const gameHistory = [
         date: "2025-11-25" 
     },
 
-    { id: "第004期", prize: "AK-47 | 幻影破坏者 (久经沙场)", seed: "Random_2736", players: ["what","what","what","what","东方树叶🍃"], outSequence: [4,2,0,3], winnerIdx: 1, date: "2025-11-25" }
+    { id: "第004期", prize: "AK-47 | 幻影破坏者 (久经沙场)", seed: "Random_2736", players: ["what","what","what","what","东方树叶🍃"], outSequence: [4,2,0,3], winnerIdx: 1, date: "2025-11-25" },
+
+    { id: "第005期", prize: "引爆器音乐盒集", seed: "Random_2346", players: ["CaseGo3979588","CaseGo352472","CaseGo352472","东方树叶🍃","Liar"], outSequence: [1,4,2,0], winnerIdx: 3, date: "2025-11-26" }
 
 ];
+
 
 
 
