@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: false, id: "第007期", prize: "USP消音版 | 脑洞大开 (久经沙场)", date: "即将上线" };
+const teaser = { active: true, id: "第008期", prize: "AWP | 死神 (久经沙场)", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -46,6 +46,7 @@ const gameHistory = [
     { id: "第007期", prize: "USP消音版 | 脑洞大开 (久经沙场)", seed: "Random_4934", players: ["CaseGo3979588","CaseGo3979588","东方树叶🍃","苏生哥","东方树叶🍃"], outSequence: [0,4,2,1], winnerIdx: 3, date: "2025-11-27" }
 
 ];
+
 
 
 
