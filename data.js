@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: false, id: "第009期", prize: "柠檬汁胸章", date: "即将上线" };
+const teaser = { active: true, id: "第010期", prize: "P250 | 迷人幻象 (久经沙场)", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -50,6 +50,7 @@ const gameHistory = [
     { id: "第009期", prize: "柠檬汁胸章", seed: "Random_2728", players: ["what","what","七七七","七七七","七七七"], outSequence: [3,2,1,4], winnerIdx: 0, date: "2025-11-28" }
 
 ];
+
 
 
 
