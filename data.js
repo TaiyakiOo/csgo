@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: false, id: "第010期", prize: "P250 | 迷人幻象 (久经沙场)", date: "即将上线" };
+const teaser = { active: true, id: "第011期", prize: "印花 | 卡哇伊CT（全息）", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -52,6 +52,7 @@ const gameHistory = [
     { id: "第010期", prize: "P250 | 迷人幻象 (久经沙场)", seed: "Random_7126", players: ["CaseGo3624888","七七七","摸鱼爽","兮玫ovo","Ggboog"], outSequence: [1,4,3,2], winnerIdx: 0, date: "2025-11-28" }
 
 ];
+
 
 
 
