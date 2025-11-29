@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: false, id: "第012期", prize: "AWP | 树蝰 (久经沙场)", date: "即将上线" };
+const teaser = { active: true, id: "第013期", prize: "音乐盒 | Neck Deep - 躺平青年", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -56,6 +56,7 @@ const gameHistory = [
     { id: "第012期", prize: "AWP | 树蝰 (久经沙场)", seed: "Random_8873", players: ["奇迹9","奇迹9","奇迹9","Ggboog","Liar"], outSequence: [2,1,4,3], winnerIdx: 0, date: "2025-11-29" }
 
 ];
+
 
 
 
