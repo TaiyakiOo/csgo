@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: false, id: "第013期", prize: "音乐盒 | Neck Deep - 躺平青年", date: "即将上线" };
+const teaser = { active: true, id: "第014期", prize: "M4A4 | 轰天闪 (久经沙场)", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -58,6 +58,7 @@ const gameHistory = [
     { id: "第013期", prize: "音乐盒 | Neck Deep - 躺平青年", seed: "Random_3191", players: ["Ggboog","枫落悔起","兮玫ovo","Ggboog","Liar"], outSequence: [1,3,2,0], winnerIdx: 4, date: "2025-11-30" }
 
 ];
+
 
 
 
