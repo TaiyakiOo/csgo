@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: true, id: "第013期", prize: "音乐盒 | Neck Deep - 躺平青年", date: "即将上线" };
+const teaser = { active: false, id: "第013期", prize: "音乐盒 | Neck Deep - 躺平青年", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -53,9 +53,12 @@ const gameHistory = [
 
     { id: "第011期", prize: "印花 | 卡哇伊CT（全息）", seed: "Random_5557", players: ["奇迹9","CaseGo5404","随便吃吃🤤","苏生哥","随便吃吃🤤"], outSequence: [2,1,0,3], winnerIdx: 4, date: "2025-11-28" },
 
-    { id: "第012期", prize: "AWP | 树蝰 (久经沙场)", seed: "Random_8873", players: ["奇迹9","奇迹9","奇迹9","Ggboog","Liar"], outSequence: [2,1,4,3], winnerIdx: 0, date: "2025-11-29" }
+    { id: "第012期", prize: "AWP | 树蝰 (久经沙场)", seed: "Random_8873", players: ["奇迹9","奇迹9","奇迹9","Ggboog","Liar"], outSequence: [2,1,4,3], winnerIdx: 0, date: "2025-11-29" },
+
+    { id: "第013期", prize: "音乐盒 | Neck Deep - 躺平青年", seed: "Random_3191", players: ["Ggboog","枫落悔起","兮玫ovo","Ggboog","Liar"], outSequence: [1,3,2,0], winnerIdx: 4, date: "2025-11-30" }
 
 ];
+
 
 
 
