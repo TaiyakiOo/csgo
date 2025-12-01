@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: true, id: "第015期", prize: "意大利小镇胸章", date: "即将上线" };
+const teaser = { active: false, id: "第015期", prize: "意大利小镇胸章", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -57,9 +57,12 @@ const gameHistory = [
 
     { id: "第013期", prize: "音乐盒 | Neck Deep - 躺平青年", seed: "Random_3191", players: ["Ggboog","枫落悔起","兮玫ovo","Ggboog","Liar"], outSequence: [1,3,2,0], winnerIdx: 4, date: "2025-11-30" },
 
-    { id: "第014期", prize: "M4A4 | 轰天闪 (久经沙场)", seed: "Random_209", players: ["七七七","Liar","优妮仙贝","good666","七七七"], outSequence: [0,2,3,4], winnerIdx: 1, date: "2025-11-30" }
+    { id: "第014期", prize: "M4A4 | 轰天闪 (久经沙场)", seed: "Random_209", players: ["七七七","Liar","优妮仙贝","good666","七七七"], outSequence: [0,2,3,4], winnerIdx: 1, date: "2025-11-30" },
+
+    { id: "第015期", prize: "意大利小镇胸章", seed: "Random_8987", players: ["CaseGo3979588","七七七","摸鱼爽","摸鱼爽","CaseGo3979588"], outSequence: [3,4,0,1], winnerIdx: 2, date: "2025-12-01" }
 
 ];
+
 
 
 
