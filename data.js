@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: false, id: "第015期", prize: "意大利小镇胸章", date: "即将上线" };
+const teaser = { active: true, id: "第015期-金桔柠檬6", prize: "AUG | 扎佩姆斯之眼 (久经沙场)", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -62,6 +62,7 @@ const gameHistory = [
     { id: "第015期", prize: "意大利小镇胸章", seed: "Random_8987", players: ["CaseGo3979588","七七七","摸鱼爽","摸鱼爽","CaseGo3979588"], outSequence: [3,4,0,1], winnerIdx: 2, date: "2025-12-01" }
 
 ];
+
 
 
 
