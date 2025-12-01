@@ -59,9 +59,12 @@ const gameHistory = [
 
     { id: "第014期", prize: "M4A4 | 轰天闪 (久经沙场)", seed: "Random_209", players: ["七七七","Liar","优妮仙贝","good666","七七七"], outSequence: [0,2,3,4], winnerIdx: 1, date: "2025-11-30" },
 
-    { id: "第015期", prize: "意大利小镇胸章", seed: "Random_8987", players: ["CaseGo3979588","七七七","摸鱼爽","摸鱼爽","CaseGo3979588"], outSequence: [3,4,0,1], winnerIdx: 2, date: "2025-12-01" }
+    { id: "第015期", prize: "意大利小镇胸章", seed: "Random_8987", players: ["CaseGo3979588","七七七","摸鱼爽","摸鱼爽","CaseGo3979588"], outSequence: [3,4,0,1], winnerIdx: 2, date: "2025-12-01" },
+
+    { id: "第015期-金桔柠檬6", prize: "AUG | 扎佩姆斯之眼 (久经沙场)", seed: "Random_4658", players: ["吃嘛了","what","摸鱼爽","Ggboog","case夺卡有问题"], outSequence: [2,1,3,0], winnerIdx: 4, date: "2025-12-01" }
 
 ];
+
 
 
 
