@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: false, id: "第020期-生椰抹茶10", prize: "音乐盒 | KILL SCRIPT - 通宵达旦", date: "即将上线" };
+const teaser = { active: true, id: "第021期-金桔柠檬9", prize: "FN57 | 同步力场 (久经沙场)", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -74,6 +74,7 @@ const gameHistory = [
     { id: "第020期-生椰抹茶10", prize: "音乐盒 | KILL SCRIPT - 通宵达旦", seed: "Random_8712", players: ["Ggboog","枫落悔起","兮玫ovo","枫落悔起","CaseGo6674233"], outSequence: [4,3,0,2], winnerIdx: 1, date: "2025-12-03" }
 
 ];
+
 
 
 
