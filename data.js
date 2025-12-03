@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: true, id: "第020期-生椰抹茶10", prize: "音乐盒 | KILL SCRIPT - 通宵达旦", date: "即将上线" };
+const teaser = { active: false, id: "第020期-生椰抹茶10", prize: "音乐盒 | KILL SCRIPT - 通宵达旦", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -69,9 +69,12 @@ const gameHistory = [
 
     { id: "第018期-生椰抹茶9", prize: "AWP | 金粉肆蛇 (久经沙场)", seed: "Random_84", players: ["摸鱼爽","Ggboog","摸鱼爽","Ggboog","Ggboog"], outSequence: [2,3,0,1], winnerIdx: 4, date: "2025-12-02" },
 
-    { id: "第019期-金桔柠檬", prize: "USP 消音版 | 血刃 (久经沙场)", seed: "Random_4978", players: ["CaseGo352472","双木萤火","Liar","Ggboog","CaseGo352472"], outSequence: [1,2,3,0], winnerIdx: 4, date: "2025-12-03" }
+    { id: "第019期-金桔柠檬", prize: "USP 消音版 | 血刃 (久经沙场)", seed: "Random_4978", players: ["CaseGo352472","双木萤火","Liar","Ggboog","CaseGo352472"], outSequence: [1,2,3,0], winnerIdx: 4, date: "2025-12-03" },
+
+    { id: "第020期-生椰抹茶10", prize: "音乐盒 | KILL SCRIPT - 通宵达旦", seed: "Random_8712", players: ["Ggboog","枫落悔起","兮玫ovo","枫落悔起","CaseGo6674233"], outSequence: [4,3,0,2], winnerIdx: 1, date: "2025-12-03" }
 
 ];
+
 
 
 
