@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: false, id: "第019期-金桔柠檬", prize: "USP 消音版 | 血刃 (久经沙场)", date: "即将上线" };
+const teaser = { active: true, id: "第020期-生椰抹茶10", prize: "音乐盒 | KILL SCRIPT - 通宵达旦", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -72,6 +72,7 @@ const gameHistory = [
     { id: "第019期-金桔柠檬", prize: "USP 消音版 | 血刃 (久经沙场)", seed: "Random_4978", players: ["CaseGo352472","双木萤火","Liar","Ggboog","CaseGo352472"], outSequence: [1,2,3,0], winnerIdx: 4, date: "2025-12-03" }
 
 ];
+
 
 
 
