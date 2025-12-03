@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: true, id: "第021期-金桔柠檬9", prize: "FN57 | 同步力场 (久经沙场)", date: "即将上线" };
+const teaser = { active: true, id: "第022期-生椰抹茶11", prize: "音乐盒 | 完美世界 - 花脸", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -71,9 +71,12 @@ const gameHistory = [
 
     { id: "第019期-金桔柠檬", prize: "USP 消音版 | 血刃 (久经沙场)", seed: "Random_4978", players: ["CaseGo352472","双木萤火","Liar","Ggboog","CaseGo352472"], outSequence: [1,2,3,0], winnerIdx: 4, date: "2025-12-03" },
 
-    { id: "第020期-生椰抹茶10", prize: "音乐盒 | KILL SCRIPT - 通宵达旦", seed: "Random_8712", players: ["Ggboog","枫落悔起","兮玫ovo","枫落悔起","CaseGo6674233"], outSequence: [4,3,0,2], winnerIdx: 1, date: "2025-12-03" }
+    { id: "第020期-生椰抹茶10", prize: "音乐盒 | KILL SCRIPT - 通宵达旦", seed: "Random_8712", players: ["Ggboog","枫落悔起","兮玫ovo","枫落悔起","CaseGo6674233"], outSequence: [4,3,0,2], winnerIdx: 1, date: "2025-12-03" },
+
+    { id: "第021期-金桔柠檬9", prize: "FN57 | 同步力场 (久经沙场)", seed: "Random_7648", players: ["双木萤火","双木萤火","CaseGo3979588","Ggboog","是嘿嘿啊"], outSequence: [3,1,4,2], winnerIdx: 0, date: "2025-12-03" }
 
 ];
+
 
 
 
