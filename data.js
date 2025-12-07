@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: false, id: "第026期-生椰抹茶13", prize: "音乐盒 | 完美世界，诶嘿", date: "即将上线" };
+const teaser = { active: true, id: "第027期-金桔柠檬12", prize: "格洛克18型 | 摩登时代 (久经沙场)", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -86,6 +86,7 @@ const gameHistory = [
     { id: "第026期-生椰抹茶13", prize: "音乐盒 | 完美世界，诶嘿", seed: "Random_543", players: ["what","what","what","CaseGo352472","what"], outSequence: [1,4,3,2], winnerIdx: 0, date: "2025-12-07" }
 
 ];
+
 
 
 
