@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: true, id: "第027期-金桔柠檬12", prize: "格洛克18型 | 摩登时代 (久经沙场)", date: "即将上线" };
+const teaser = { active: true, id: "第028期-生椰抹茶14", prize: "音乐盒 | Lennie Moore - 爪哇哈瓦那放克乐", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -83,9 +83,12 @@ const gameHistory = [
 
     { id: "第025期-金桔柠檬11", prize: "加利尔AR | 迷人眼 (久经沙场)", seed: "Random_6104", players: ["是嘿嘿啊","CaseGo3979588","吃嘛了","吃嘛了","吃嘛了"], outSequence: [1,3,0,2], winnerIdx: 4, date: "2025-12-06" },
 
-    { id: "第026期-生椰抹茶13", prize: "音乐盒 | 完美世界，诶嘿", seed: "Random_543", players: ["what","what","what","CaseGo352472","what"], outSequence: [1,4,3,2], winnerIdx: 0, date: "2025-12-07" }
+    { id: "第026期-生椰抹茶13", prize: "音乐盒 | 完美世界，诶嘿", seed: "Random_543", players: ["what","what","what","CaseGo352472","what"], outSequence: [1,4,3,2], winnerIdx: 0, date: "2025-12-07" },
+
+    { id: "第027期", prize: "金桔柠檬12", seed: "Random_2320", players: ["CaseGoxx黑化版绝地翻盘","CaseGo352472","CaseGo352472","幸运王999","枫铃月"], outSequence: [2,3,1,4], winnerIdx: 0, date: "2025-12-08" }
 
 ];
+
 
 
 
