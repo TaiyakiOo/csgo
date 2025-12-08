@@ -85,9 +85,10 @@ const gameHistory = [
 
     { id: "第026期-生椰抹茶13", prize: "音乐盒 | 完美世界，诶嘿", seed: "Random_543", players: ["what","what","what","CaseGo352472","what"], outSequence: [1,4,3,2], winnerIdx: 0, date: "2025-12-07" },
 
-    { id: "第027期", prize: "金桔柠檬12", seed: "Random_2320", players: ["CaseGoxx黑化版绝地翻盘","CaseGo352472","CaseGo352472","幸运王999","枫铃月"], outSequence: [2,3,1,4], winnerIdx: 0, date: "2025-12-08" }
+    { id: "第027期-金桔柠檬12", prize: "XM1014 | 埋葬之影 (久经沙场)", seed: "Random_2320", players: ["CaseGoxx黑化版绝地翻盘","CaseGo352472","CaseGo352472","幸运王999","枫铃月"], outSequence: [2,3,1,4], winnerIdx: 0, date: "2025-12-08" }
 
 ];
+
 
 
 
