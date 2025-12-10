@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: false, id: "第028期-生椰抹茶14", prize: "音乐盒 | Lennie Moore - 爪哇哈瓦那放克乐", date: "即将上线" };
+const teaser = { active: true, id: "第029期-金桔柠檬13", prize: "M4A4 | 齿仙 (久经沙场)", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -90,6 +90,7 @@ const gameHistory = [
     { id: "第028期-生椰抹茶14", prize: "音乐盒 | Lennie Moore - 爪哇哈瓦那放克乐", seed: "Random_3360", players: ["你们笑哈哈","CaseGoxx黑化版绝地翻盘","七七七","经验+3","hxbz"], outSequence: [3,0,2,4], winnerIdx: 1, date: "2025-12-10" }
 
 ];
+
 
 
 
