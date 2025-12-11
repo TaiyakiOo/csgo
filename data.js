@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: false, id: "第029期-金桔柠檬13", prize: "M4A4 | 齿仙 (久经沙场)", date: "即将上线" };
+const teaser = { active: true, id: "第030期-生椰抹茶15", prize: "音乐盒 | 多名作曲家 - 迈阿密热线", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -92,6 +92,7 @@ const gameHistory = [
     { id: "第029期-金桔柠檬13", prize: "M4A4 | 齿仙 (久经沙场)", seed: "Random_774", players: ["CaseGoxx黑化版绝地翻盘","CaseGo3979588","what","CaseGo3979588","CaseGoxx黑化版绝地翻盘"], outSequence: [0,4,2,3], winnerIdx: 1, date: "2025-12-11" }
 
 ];
+
 
 
 
