@@ -91,9 +91,12 @@ const gameHistory = [
 
     { id: "第029期-金桔柠檬13", prize: "M4A4 | 齿仙 (久经沙场)", seed: "Random_774", players: ["CaseGoxx黑化版绝地翻盘","CaseGo3979588","what","CaseGo3979588","CaseGoxx黑化版绝地翻盘"], outSequence: [0,4,2,3], winnerIdx: 1, date: "2025-12-11" },
 
-    { id: "第030期-生椰抹茶15", prize: "音乐盒 | 多名作曲家 - 迈阿密热线", seed: "Random_4738", players: ["让俺老猪吃一口","让俺老猪吃一口","优妮仙贝","让俺老猪吃一口","让俺老猪吃一口"], outSequence: [3,1,4,2], winnerIdx: 0, date: "2025-12-11" }
+    { id: "第030期-生椰抹茶15", prize: "音乐盒 | 多名作曲家 - 迈阿密热线", seed: "Random_4738", players: ["让俺老猪吃一口","让俺老猪吃一口","优妮仙贝","让俺老猪吃一口","让俺老猪吃一口"], outSequence: [3,1,4,2], winnerIdx: 0, date: "2025-12-11" },
+
+    { id: "第031期-金桔柠檬14", prize: "XM1014 | 怪物汰换 (久经沙场)", seed: "Random_1313", players: ["what","是嘿嘿啊","what","what","what"], outSequence: [1,3,0,2], winnerIdx: 4, date: "2025-12-12" }
 
 ];
+
 
 
 
