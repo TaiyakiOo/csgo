@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: false, id: "第037期-金桔柠檬17", prize: "Tec-9 | 遥控 (久经沙场)", date: "即将上线" };
+const teaser = { active: true, id: "第037期-生椰抹茶19", prize: "音乐盒 | New Beat Fund - 海绵手指", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -108,6 +108,7 @@ const gameHistory = [
     { id: "第037期-金桔柠檬17", prize: "Tec-9 | 遥控 (久经沙场)", seed: "Random_6790", players: ["CaseGo2370419","CaseGo2370419","CaseGo2370419","what","CaseGo2370419"], outSequence: [2,3,4,0], winnerIdx: 1, date: "2025-12-17" }
 
 ];
+
 
 
 
