@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: true, id: "第037期-生椰抹茶19", prize: "音乐盒 | New Beat Fund - 海绵手指", date: "即将上线" };
+const teaser = { active: false, id: "第037期-生椰抹茶19", prize: "音乐盒 | New Beat Fund - 海绵手指", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -105,9 +105,12 @@ const gameHistory = [
 
     { id: "第036期-生椰抹茶18", prize: "音乐盒 | bbno$ - 你急了！", seed: "Random_1790", players: ["CaseGo3979588","CaseGo3979588","CaseGo2370419","是嘿嘿啊","CaseGo3979588"], outSequence: [2,1,4,3], winnerIdx: 0, date: "2025-12-16" },
 
-    { id: "第037期-金桔柠檬17", prize: "Tec-9 | 遥控 (久经沙场)", seed: "Random_6790", players: ["CaseGo2370419","CaseGo2370419","CaseGo2370419","what","CaseGo2370419"], outSequence: [2,3,4,0], winnerIdx: 1, date: "2025-12-17" }
+    { id: "第037期-金桔柠檬17", prize: "Tec-9 | 遥控 (久经沙场)", seed: "Random_6790", players: ["CaseGo2370419","CaseGo2370419","CaseGo2370419","what","CaseGo2370419"], outSequence: [2,3,4,0], winnerIdx: 1, date: "2025-12-17" },
+
+    { id: "第037期-生椰抹茶19", prize: "音乐盒 | New Beat Fund - 海绵手指", seed: "Random_8895", players: ["Liar","东方树叶🍃","（o.0）","CaseGo2370419","Liar"], outSequence: [0,2,1,3], winnerIdx: 4, date: "2025-12-18" }
 
 ];
+
 
 
 
