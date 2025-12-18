@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: false, id: "第037期-生椰抹茶19", prize: "音乐盒 | New Beat Fund - 海绵手指", date: "即将上线" };
+const teaser = { active: true, id: "第038期-金桔柠檬18", prize: "截短霰弹枪 | 么么 (久经沙场)", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -110,6 +110,7 @@ const gameHistory = [
     { id: "第037期-生椰抹茶19", prize: "音乐盒 | New Beat Fund - 海绵手指", seed: "Random_8895", players: ["Liar","东方树叶🍃","（o.0）","CaseGo2370419","Liar"], outSequence: [0,2,1,3], winnerIdx: 4, date: "2025-12-18" }
 
 ];
+
 
 
 
