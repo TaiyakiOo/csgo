@@ -1,5 +1,5 @@
 // --- 🔴 预告位设置 ---
-const teaser = { active: true, id: "第038期-金桔柠檬18", prize: "截短霰弹枪 | 么么 (久经沙场)", date: "即将上线" };
+const teaser = { active: false, id: "第039期-生椰抹茶20", prize: "音乐盒 | Midnight Riders - 圣诞之欲", date: "即将上线" };
 
 // --- 🔵 历史回放列表 ---
 const gameHistory = [
@@ -107,9 +107,12 @@ const gameHistory = [
 
     { id: "第037期-金桔柠檬17", prize: "Tec-9 | 遥控 (久经沙场)", seed: "Random_6790", players: ["CaseGo2370419","CaseGo2370419","CaseGo2370419","what","CaseGo2370419"], outSequence: [2,3,4,0], winnerIdx: 1, date: "2025-12-17" },
 
-    { id: "第037期-生椰抹茶19", prize: "音乐盒 | New Beat Fund - 海绵手指", seed: "Random_8895", players: ["Liar","东方树叶🍃","（o.0）","CaseGo2370419","Liar"], outSequence: [0,2,1,3], winnerIdx: 4, date: "2025-12-18" }
+    { id: "第037期-生椰抹茶19", prize: "音乐盒 | New Beat Fund - 海绵手指", seed: "Random_8895", players: ["Liar","东方树叶🍃","（o.0）","CaseGo2370419","Liar"], outSequence: [0,2,1,3], winnerIdx: 4, date: "2025-12-18" },
+
+    { id: "第038期-金桔柠檬18", prize: "截短霰弹枪 | 么么 (久经沙场)", seed: "Random_9682", players: ["披头散发的秃子","披头散发的秃子","披头散发的秃子","披头散发的秃子","幸运王999"], outSequence: [0,4,2,3], winnerIdx: 1, date: "2025-12-18" }
 
 ];
+
 
 
 
