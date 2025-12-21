@@ -3,419 +3,396 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大逃杀监控室</title>
+    <title>哈基肉大逃杀 | 幸存者档案</title>
     <script src="data.js"></script>
     <style>
-        /* --- 🌑 赛博/监控室风格 --- */
+        /* --- 🌑 全新视觉风格 (Cyber-Dark) --- */
         :root {
-            --bg: #050505;
-            --grid-line: #1f1f1f;
-            --room-bg: #0f0f0f;
-            --gold: #f0c05a;
-            --red: #ff3333;
-            --neon-red: 0 0 10px rgba(255, 50, 50, 0.8);
-            --text: #a0a0a0;
+            --bg: #080808;
+            --card-bg: #111;
+            --gold: #eebc51;
+            --gold-dim: #8a6d2e;
+            --red: #d32f2f;
+            --red-glow: rgba(211, 47, 47, 0.4);
+            --text-main: #e0e0e0;
+            --text-sub: #666;
         }
 
         body {
             background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', 'Roboto Mono', monospace;
-            margin: 0; padding: 10px;
+            /* 网格背景纹理 */
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0; padding: 20px;
             display: flex; flex-direction: column; align-items: center;
             min-height: 100vh;
         }
 
-        h1 { margin: 10px 0 5px 0; font-size: 20px; color: #fff; letter-spacing: 2px; text-transform: uppercase; }
-        .subtitle { font-size: 10px; color: #555; margin-bottom: 20px; }
-
-        /* --- 列表 --- */
-        .history-list { width: 100%; max-width: 400px; padding-bottom: 50px; }
-        .match-card {
-            background: #111; border: 1px solid #333;
-            margin-bottom: 8px; padding: 10px; display: flex; align-items: center; 
-            cursor: pointer; transition: 0.2s;
+        /* --- 顶部 Hero 区域 --- */
+        .hero { text-align: center; margin-bottom: 40px; padding-top: 20px; }
+        h1 {
+            margin: 0; font-size: 28px; font-weight: 800; letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(180deg, #fff, #888);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .match-card:hover { border-color: var(--gold); background: #1a1a1a; }
-        .match-card .info { font-size: 13px; color: #fff; font-weight: bold; }
-        .match-card .type-icon { margin-left: 5px; font-size: 10px; background: #333; padding: 2px 4px; border-radius: 3px; }
+        .subtitle { 
+            color: var(--gold); font-size: 10px; letter-spacing: 4px; 
+            margin-top: 8px; text-transform: uppercase; opacity: 0.8; 
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .subtitle::before, .subtitle::after { content: ""; width: 30px; height: 1px; background: var(--gold-dim); }
 
-        /* --- 📺 监控主屏 --- */
+        /* --- 按钮美化 --- */
+        .cta-btn {
+            background: rgba(238, 188, 81, 0.1); border: 1px solid var(--gold-dim);
+            color: var(--gold); text-decoration: none; padding: 10px 25px;
+            border-radius: 4px; font-size: 13px; font-weight: bold;
+            transition: 0.3s; display: inline-block; margin-bottom: 30px;
+        }
+        .cta-btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 15px var(--gold-dim); }
+
+        /* --- 列表卡片 (UI升级) --- */
+        .history-list { width: 100%; max-width: 450px; padding-bottom: 80px; }
+        
+        .match-card {
+            background: var(--card-bg); border: 1px solid #222;
+            margin-bottom: 12px; padding: 15px; 
+            display: flex; align-items: center; justify-content: space-between;
+            border-radius: 6px; cursor: pointer; position: relative; overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        .match-card::before {
+            content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; 
+            background: #333; transition: 0.2s;
+        }
+        .match-card:hover { transform: translateY(-2px); border-color: #444; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .match-card:hover::before { background: var(--gold); }
+
+        .card-left { display: flex; flex-direction: column; gap: 4px; }
+        .card-id { font-size: 14px; font-weight: bold; color: #fff; }
+        .card-prize { font-size: 11px; color: var(--gold-dim); display: flex; align-items: center; gap: 5px; }
+        
+        .card-right { text-align: right; }
+        .tag-mode { 
+            font-size: 9px; padding: 2px 6px; border-radius: 3px; 
+            background: #1a1a1a; color: #666; border: 1px solid #333; text-transform: uppercase;
+        }
+
+        /* --- 游戏弹窗 (保持科技感) --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; flex-direction: column; align-items: center; justify-content: center; }
         
-        .screen-header { 
-            width: 100%; max-width: 400px; display: flex; justify-content: space-between; 
-            padding: 10px; box-sizing: border-box; color: var(--gold); font-size: 12px; border-bottom: 1px solid #333; margin-bottom: 20px;
+        .header-bar { 
+            width: 100%; max-width: 360px; display: flex; justify-content: space-between; 
+            padding-bottom: 10px; border-bottom: 1px solid #222; margin-bottom: 20px;
+            font-size: 12px; color: var(--gold); font-family: monospace;
         }
 
-        /* --- 🏰 地图设计 --- */
-        .map-wrapper { position: relative; width: 340px; height: 340px; }
-        
-        .mansion-grid {
+        .map-wrapper { 
+            position: relative; width: 340px; height: 340px; 
+            background: #0b0b0b; border: 1px solid #333; padding: 5px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.7); 
+        }
+
+        .map-grid {
             display: grid; grid-template-columns: repeat(3, 1fr);
-            width: 100%; height: 100%;
-            gap: 2px; background: #333; border: 2px solid #444;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            width: 100%; height: 100%; gap: 4px;
         }
 
         .room-cell {
-            background: var(--room-bg);
+            background: #141414; border: 1px solid #222;
             position: relative; display: flex; flex-wrap: wrap; 
             align-items: center; justify-content: center;
-            overflow: hidden; transition: background 0.3s;
+            transition: background 0.2s;
         }
+        .room-label { position: absolute; top: 2px; left: 3px; font-size: 8px; color: #333; }
         
-        /* 房间被扫描/选中时的效果 */
-        .room-cell.target-lock { background: #1a0505; box-shadow: inset 0 0 20px var(--red); border: 1px solid var(--red); }
-        .room-cell.blood-bath { background: #500 !important; transition: 0.1s; }
+        .room-cell.purged { background: #300505 !important; border-color: #800; }
+        .room-cell.target { border-color: var(--red); }
 
-        .room-id { position: absolute; top: 2px; left: 4px; font-size: 8px; color: #333; font-family: sans-serif; }
-
-        /* 玩家头像 */
-        .player-dot {
-            width: 28px; height: 28px; background: #222; color: #fff;
-            border: 1px solid #555; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 10px; font-weight: bold; margin: 2px;
+        .p-dot {
+            width: 26px; height: 26px; background: #222; color: #aaa;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: bold; margin: 2px; border: 1px solid #444;
             z-index: 10; transition: 0.3s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
-        .player-dot.survivor { border-color: var(--gold); color: var(--gold); }
-        .player-dot.dead { background: #111; color: #333; border-color: #333; text-decoration: line-through; transform: scale(0.8); }
+        .p-dot.dead { background: #000; color: #333; border-color: #222; text-decoration: line-through; opacity: 0.6; transform: scale(0.8); }
 
-        /* 👹 追猎者 */
         .hunter {
-            position: absolute; width: 40px; height: 40px;
-            background: radial-gradient(circle, var(--red) 0%, transparent 70%);
+            position: absolute; width: 36px; height: 36px;
+            background: var(--red); border-radius: 50%;
+            box-shadow: 0 0 20px var(--red);
             display: flex; align-items: center; justify-content: center;
-            font-size: 24px; z-index: 99;
-            transition: top 0.4s linear, left 0.4s linear; /* 线性移动配合JS */
-            filter: drop-shadow(var(--neon-red));
+            font-size: 20px; z-index: 99; color: #fff;
+            transition: top 0.4s linear, left 0.4s linear; 
             pointer-events: none;
         }
 
-        /* --- 控制台 --- */
-        .console-log {
-            width: 340px; height: 60px; margin-top: 15px;
-            background: #0a0a0a; border: 1px solid #333;
-            font-family: monospace; font-size: 10px; color: #0f0;
-            padding: 5px; overflow: hidden; display: flex; align-items: center; justify-content: center;
-            text-align: center;
+        .console { 
+            width: 340px; text-align: center; color: #444; font-family: monospace; 
+            font-size: 10px; margin-top: 15px; min-height: 15px; letter-spacing: 1px;
         }
-
-        .action-btn {
-            margin-top: 20px;
-            background: var(--red); color: #fff; border: none;
-            padding: 12px 40px; font-size: 14px; font-weight: bold; letter-spacing: 2px;
+        
+        .start-btn {
+            margin-top: 25px; background: var(--red); color: #fff; border: none;
+            padding: 12px 50px; font-weight: bold; font-size: 14px; letter-spacing: 2px; cursor: pointer;
+            box-shadow: 0 0 20px var(--red-glow); 
             clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-            cursor: pointer; box-shadow: var(--neon-red);
             transition: 0.2s;
         }
-        .action-btn:active { transform: scale(0.95); }
-        .action-btn.hidden { display: none; }
+        .start-btn:hover { background: #ff4444; }
+        .start-btn:active { transform: scale(0.96); }
+        .start-btn.hide { display: none; }
 
-        /* --- 轮盘兼容样式 --- */
-        .wheel-area { display: none; width: 100%; height: 150px; background: #111; border: 1px solid var(--gold); position:relative; overflow:hidden;}
-        .strip { display:flex; height:100%; position:absolute; left:50%; }
-        .wheel-item { width:90px; height:100%; background:#222; border-right:1px solid #000; display:flex; align-items:center; justify-content:center; }
-        
-        /* 结算 */
-        .winner-overlay { display: none; position: absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); flex-direction: column; align-items: center; justify-content: center; z-index: 200; animation: fadeIn 1s;}
-        
-        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        /* 结算层 */
+        .result-overlay { 
+            display: none; position: absolute; top:0; left:0; width:100%; height:100%; 
+            background: rgba(0,0,0,0.95); flex-direction: column; align-items: center; justify-content: center; 
+            z-index: 200; animation: fadein 0.5s;
+        }
+        @keyframes fadein { from{opacity:0} to{opacity:1} }
     </style>
 </head>
 <body>
 
-    <h1>大逃杀监控室</h1>
-    <div class="subtitle">AUTOMATED BATTLE ROYALE SYSTEM</div>
+    <div class="hero">
+        <h1>CS:GO BATTLE ROYALE</h1>
+        <div class="subtitle">生存率 22.2% · 9房选2</div>
+    </div>
+
+    <a href="https://casego.cn/home?Code=HSR91" target="_blank" class="cta-btn">
+        🎟️ 前往 Casego 参与
+    </a>
 
     <div class="history-list" id="listArea"></div>
 
+    <!-- 游戏弹窗 -->
     <div class="modal" id="gameModal">
-        <div class="screen-header">
-            <div id="gameIdDisplay">ID: 000</div>
-            <div id="statusTag">STANDBY</div>
+        <div class="header-bar">
+            <div id="gid">ID: --</div>
+            <div id="status">SYSTEM READY</div>
         </div>
 
-        <!-- 地图模式 -->
-        <div class="map-wrapper" id="mapWrapper">
-            <div class="mansion-grid" id="grid"></div>
+        <div class="map-wrapper">
+            <div class="map-grid" id="grid"></div>
             <div class="hunter" id="hunter" style="display:none">👹</div>
         </div>
 
-        <!-- 转盘模式(兼容) -->
-        <div class="wheel-area" id="wheelWrapper">
-            <div style="position:absolute;left:50%;top:0;height:100%;width:2px;background:var(--gold);z-index:10;transform:translateX(-50%)"></div>
-            <div class="strip" id="wheelStrip"></div>
-        </div>
+        <div class="console" id="console">WAITING FOR AUTHORIZATION...</div>
 
-        <div class="console-log" id="consoleText">等待系统启动...</div>
+        <button class="start-btn" id="btnStart" onclick="runSequence()">INITIATE</button>
+        <button onclick="closeGame()" style="margin-top:20px;background:none;border:none;color:#333;cursor:pointer;font-size:10px">ABORT</button>
 
-        <button class="action-btn" id="startBtn" onclick="startAutoSequence()">START MASSACRE</button>
-        <button onclick="closeGame()" style="background:transparent;border:1px solid #333;color:#555;margin-top:20px;padding:5px 20px;cursor:pointer">EXIT</button>
-
-        <div class="winner-overlay" id="winScreen">
-            <div style="font-size:50px">🏆</div>
-            <div style="color:var(--gold);font-size:20px;font-weight:bold;margin-top:10px" id="wName"></div>
-            <div style="color:#666;font-size:12px;margin-top:5px" id="wPrize"></div>
-            <button onclick="closeGame()" style="margin-top:20px;background:#333;color:#fff;border:none;padding:10px 30px">CLOSE</button>
+        <div class="result-overlay" id="resultScreen">
+            <div style="font-size:50px; margin-bottom:15px" id="resIcon">🏆</div>
+            <div style="color:var(--gold); font-size:18px; font-weight:bold; letter-spacing:2px" id="resTitle">SURVIVORS</div>
+            <div style="color:#ccc; font-size:14px; margin-top:10px; text-align:center; line-height:1.6" id="resNames"></div>
+            <div style="color:#555; font-size:10px; margin-top:20px; border-top:1px solid #333; padding-top:10px">REWARD</div>
+            <div style="color:#888; font-size:12px; margin-top:2px" id="resPrize"></div>
+            <button onclick="closeGame()" style="margin-top:30px; border:1px solid #333; background:none; color:#666; padding:8px 30px; border-radius:50px; cursor:pointer">CLOSE</button>
         </div>
     </div>
 
     <script>
-        // 音效
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function sfx(t) {
-            if(audioCtx.state==='suspended') audioCtx.resume();
-            const osc=audioCtx.createOscillator(), g=audioCtx.createGain();
-            const now=audioCtx.currentTime;
-            if(t==='step'){
-                osc.type='triangle'; osc.frequency.setValueAtTime(100,now); osc.frequency.exponentialRampToValueAtTime(50,now+0.1);
-                g.gain.setValueAtTime(0.1,now); g.gain.exponentialRampToValueAtTime(0.01,now+0.1);
-                osc.start(now); osc.stop(now+0.1);
-            } else if(t==='kill'){
-                osc.type='sawtooth'; osc.frequency.setValueAtTime(100,now); osc.frequency.exponentialRampToValueAtTime(10,now+0.3);
-                g.gain.setValueAtTime(0.5,now); g.gain.exponentialRampToValueAtTime(0.01,now+0.3);
-                osc.start(now); osc.stop(now+0.3);
-            } else if(t==='win'){
-                osc.type='sine'; osc.frequency.setValueAtTime(440,now); 
-                g.gain.setValueAtTime(0.2,now); g.gain.exponentialRampToValueAtTime(0.01,now+1);
-                osc.start(now); osc.stop(now+1);
+        const ac = new (window.AudioContext || window.webkitAudioContext)();
+        function playSfx(k) {
+            if(ac.state==='suspended') ac.resume();
+            const t=ac.currentTime, o=ac.createOscillator(), g=ac.createGain();
+            o.connect(g); g.connect(ac.destination);
+            if(k==='step'){
+                o.frequency.setValueAtTime(80,t); o.frequency.exponentialRampToValueAtTime(40,t+0.1);
+                g.gain.setValueAtTime(0.05,t); g.gain.linearRampToValueAtTime(0,t+0.1);
+                o.start(t); o.stop(t+0.1);
+            } else if(k==='purge'){
+                o.type='sawtooth'; o.frequency.setValueAtTime(120,t); o.frequency.exponentialRampToValueAtTime(10,t+0.4);
+                g.gain.setValueAtTime(0.3,t); g.gain.exponentialRampToValueAtTime(0,t+0.4);
+                o.start(t); o.stop(t+0.4);
+            } else if(k==='win'){
+                o.type='sine'; o.frequency.setValueAtTime(440,t); g.gain.setValueAtTime(0.2,t); g.gain.exponentialRampToValueAtTime(0,t+2);
+                o.start(t); o.stop(t+2);
             }
-            osc.connect(g); g.connect(audioCtx.destination);
         }
         function wait(ms){return new Promise(r=>setTimeout(r,ms))}
 
-        // 核心变量
-        let currentGame = null;
-        let hunterPos = -1; // 屠夫当前的格子索引 0-8
+        let curGame = null;
+        let hunterPos = 4;
 
-        // 1. 列表渲染
+        // 渲染首页列表
         const listArea = document.getElementById('listArea');
-        if(typeof gameHistory !== 'undefined') {
+        if(typeof gameHistory !== 'undefined'){
             gameHistory.slice().reverse().forEach(g => {
-                const div = document.createElement('div');
-                div.className = 'match-card';
-                div.onclick = () => loadGame(g);
-                const isMap = g.type === 'map';
-                div.innerHTML = `
-                    <div style="flex:1">
-                        <span class="info">${g.id}</span>
-                        ${isMap ? '<span class="type-icon">MAP</span>' : ''}
-                        <div style="color:#666;font-size:10px;margin-top:2px">${g.prize}</div>
+                const d = document.createElement('div');
+                d.className = 'match-card';
+                d.onclick = () => loadGame(g);
+                d.innerHTML = `
+                    <div class="card-left">
+                        <div class="card-id">${g.id}</div>
+                        <div class="card-prize">📦 ${g.prize}</div>
+                    </div>
+                    <div class="card-right">
+                        <span class="tag-mode">${g.type==='map_zone'?'ZONE':'CLASSIC'}</span>
                     </div>
                 `;
-                listArea.appendChild(div);
+                listArea.appendChild(d);
             });
         }
 
-        // 2. 加载游戏
-        function loadGame(game) {
-            currentGame = game;
+        function loadGame(g) {
+            if(g.type !== 'map_zone') { alert("Legacy format not supported in this UI"); return; }
+            curGame = g;
             document.getElementById('gameModal').style.display = 'flex';
-            document.getElementById('winScreen').style.display = 'none';
-            document.getElementById('gameIdDisplay').innerText = game.id;
-            document.getElementById('consoleText').innerText = "SYSTEM READY. AWAITING START.";
-            document.getElementById('startBtn').classList.remove('hidden');
-
-            // 模式切换
-            if (game.type === 'map') {
-                document.getElementById('mapWrapper').style.display = 'block';
-                document.getElementById('wheelWrapper').style.display = 'none';
-                initMap(game);
-            } else {
-                document.getElementById('mapWrapper').style.display = 'none';
-                document.getElementById('wheelWrapper').style.display = 'block';
-                initWheel(game);
-            }
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('gid').innerText = g.id;
+            document.getElementById('status').innerText = "SYSTEM STANDBY";
+            document.getElementById('btnStart').classList.remove('hide');
+            initGrid(g);
         }
 
         function closeGame() { document.getElementById('gameModal').style.display = 'none'; }
 
-        // --- 地图模式核心逻辑 ---
-
-        function initMap(game) {
+        function initGrid(g) {
             const grid = document.getElementById('grid');
             grid.innerHTML = '';
-            
-            // 生成9个房间
-            for(let i=0; i<9; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'room-cell';
-                cell.id = `cell-${i}`;
-                cell.innerHTML = `<div class="room-id">R-${i+1}</div>`;
-                grid.appendChild(cell);
+            for(let i=0; i<9; i++){
+                const c = document.createElement('div');
+                c.className = 'room-cell';
+                c.id = `room-${i}`;
+                c.innerHTML = `<span class="room-label">R${i+1}</span>`;
+                grid.appendChild(c);
             }
-
-            // 放置玩家
-            game.players.forEach((name, idx) => {
-                const roomIdx = game.rooms[idx];
-                const cell = document.getElementById(`cell-${roomIdx}`);
+            g.players.forEach((name, idx) => {
+                const r = g.rooms[idx];
                 const dot = document.createElement('div');
-                dot.className = 'player-dot';
+                dot.className = 'p-dot';
                 dot.id = `p-${idx}`;
-                dot.innerText = name.substring(0,1); // 只显示首字
+                dot.innerText = name[0];
                 dot.title = name;
-                cell.appendChild(dot);
+                document.getElementById(`room-${r}`).appendChild(dot);
             });
-
-            // 初始化屠夫位置 (隐藏)
-            const hunter = document.getElementById('hunter');
-            hunter.style.display = 'none';
-            hunterPos = -1; 
-        }
-
-        // 自动连播主循环
-        async function startAutoSequence() {
-            if(currentGame.type !== 'map') { playWheelSequence(); return; }
-
-            document.getElementById('startBtn').classList.add('hidden');
-            document.getElementById('statusTag').innerText = "SEQUENCE RUNNING";
-            
-            // 屠夫初始入场 (随机一个空降点，或者从 4 号位中间出来)
             hunterPos = 4;
-            updateHunterVis(4); 
-            document.getElementById('hunter').style.display = 'flex';
-            log("⚠ 警告：追猎者已进入设施");
-            await wait(1500);
+            document.getElementById('hunter').style.display = 'none'; 
+        }
 
-            // 循环处决名单
-            for (let i = 0; i < currentGame.outSequence.length; i++) {
-                const victimIdx = currentGame.outSequence[i];
-                const victimRoom = currentGame.rooms[victimIdx];
-                const victimName = currentGame.players[victimIdx];
+        async function runSequence() {
+            document.getElementById('btnStart').classList.add('hide');
+            document.getElementById('status').innerText = "PURGE SEQUENCE ACTIVE";
+            
+            const h = document.getElementById('hunter');
+            updateHunterPos(4);
+            h.style.display = 'flex';
+            log("HUNTER DEPLOYED");
+            await wait(1000);
 
-                log(`正在搜寻目标: ${victimName}...`);
+            const seq = curGame.huntSequence || [];
+            let localAlive = curGame.players.map(()=>true);
+
+            // 循环清洗 7 个房间
+            for (let i = 0; i < seq.length; i++) {
+                const targetRoom = seq[i];
+                log(`TARGETING SECTOR ${targetRoom+1}...`);
                 
-                // 1. 寻路并移动
-                await moveHunterTo(victimRoom);
+                await moveHunterPath(targetRoom);
 
-                // 2. 杀戮特效
-                log(`>> 目标锁定 [${victimName}] <<`);
-                sfx('kill');
-                const cell = document.getElementById(`cell-${victimRoom}`);
-                cell.classList.add('blood-bath');
-                const pDot = document.getElementById(`p-${victimIdx}`);
-                if(pDot) pDot.classList.add('dead');
-
+                // 无论是否有人，都变红
+                playSfx('purge');
+                const roomEl = document.getElementById(`room-${targetRoom}`);
+                roomEl.classList.add('purged');
+                
                 if(navigator.vibrate) navigator.vibrate(200);
-                await wait(800);
-                cell.classList.remove('blood-bath');
-                
-                log(`${victimName} 已确认死亡。`);
-                await wait(1000); // 停顿一下再找下一个
-            }
 
-            // 结束
-            showMapWinner();
-        }
-
-        // BFS 寻路算法 (3x3 网格)
-        // 0 1 2
-        // 3 4 5
-        // 6 7 8
-        function getPath(start, end) {
-            if (start === end) return [start];
-            const adj = [
-                [1,3], [0,2,4], [1,5],
-                [0,4,6], [1,3,5,7], [2,4,8],
-                [3,7], [4,6,8], [5,7]
-            ];
-            let queue = [[start]];
-            let visited = new Set([start]);
-            
-            while(queue.length > 0) {
-                let path = queue.shift();
-                let node = path[path.length-1];
-                if (node === end) return path;
-                
-                for(let neighbor of adj[node]) {
-                    if(!visited.has(neighbor)) {
-                        visited.add(neighbor);
-                        let newPath = [...path, neighbor];
-                        queue.push(newPath);
+                // 检查是否有人并淘汰
+                let casualties = false;
+                curGame.players.forEach((n, idx) => {
+                    if (curGame.rooms[idx] === targetRoom && localAlive[idx]) {
+                        localAlive[idx] = false;
+                        const pDot = document.getElementById(`p-${idx}`);
+                        if(pDot) pDot.classList.add('dead');
+                        casualties = true;
                     }
+                });
+
+                if(casualties) log(`CASUALTIES IN SECTOR ${targetRoom+1}`);
+                else log(`SECTOR ${targetRoom+1} CLEARED (EMPTY)`);
+
+                await wait(800);
+            }
+
+            finishGame(localAlive);
+        }
+
+        // BFS Pathfinding
+        function getPath(start, end) {
+            if(start===end) return [start];
+            const adj = [[1,3],[0,2,4],[1,5],[0,4,6],[1,3,5,7],[2,4,8],[3,7],[4,6,8],[5,7]];
+            let q = [[start]], v = new Set([start]);
+            while(q.length){
+                let path = q.shift();
+                let last = path[path.length-1];
+                if(last === end) return path;
+                for(let n of adj[last]){
+                    if(!v.has(n)){ v.add(n); q.push([...path, n]); }
                 }
             }
-            return [end]; // fallback
+            return [end];
         }
 
-        // 移动动画
-        async function moveHunterTo(targetRoom) {
-            const path = getPath(hunterPos, targetRoom);
-            // path 是 [start, next, next, end]
-            // 我们从索引 1 开始走 (索引0是当前位置)
-            for (let i = 1; i < path.length; i++) {
-                const nextStep = path[i];
-                updateHunterVis(nextStep);
-                sfx('step');
-                await wait(400); // 走路速度
+        async function moveHunterPath(target) {
+            const path = getPath(hunterPos, target);
+            for(let i=1; i<path.length; i++){
+                playSfx('step');
+                updateHunterPos(path[i]);
+                await wait(300);
             }
         }
 
-        function updateHunterVis(idx) {
+        function updateHunterPos(idx) {
             hunterPos = idx;
-            const hunter = document.getElementById('hunter');
-            const cell = document.getElementById(`cell-${idx}`);
-            // 计算相对位置: cell的offset + cell宽高一半 - hunter宽高一半
-            // 这里因为 grid 是 relative, 我们可以直接取 cell 的 offsetLeft/Top
-            const left = cell.offsetLeft + cell.offsetWidth/2 - 20;
-            const top = cell.offsetTop + cell.offsetHeight/2 - 20;
-            hunter.style.left = left + 'px';
-            hunter.style.top = top + 'px';
-            
-            // 扫光效果
-            document.querySelectorAll('.room-cell').forEach(c=>c.classList.remove('target-lock'));
-            cell.classList.add('target-lock');
+            const h = document.getElementById('hunter');
+            const r = document.getElementById(`room-${idx}`);
+            const left = r.offsetLeft + r.offsetWidth/2 - 18;
+            const top = r.offsetTop + r.offsetHeight/2 - 18;
+            h.style.left = left + 'px';
+            h.style.top = top + 'px';
+            document.querySelectorAll('.room-cell').forEach(e=>e.classList.remove('target'));
+            r.classList.add('target');
         }
 
-        function log(msg) {
-            document.getElementById('consoleText').innerText = msg;
-        }
-
-        function showMapWinner() {
+        function finishGame(aliveState) {
+            playSfx('win');
             const survivors = [];
-            // 找出不在 outSequence 的人
-            currentGame.players.forEach((p,i) => {
-                if(!currentGame.outSequence.includes(i)) survivors.push(p);
+            curGame.players.forEach((n, i) => {
+                if(aliveState[i]) survivors.push(n);
             });
-            
-            sfx('win');
-            document.getElementById('winScreen').style.display = 'flex';
-            document.getElementById('wName').innerText = survivors.join(" & ");
-            document.getElementById('wPrize').innerText = currentGame.prize;
-        }
 
-        // --- 旧版转盘兼容 (简易自动版) ---
-        async function playWheelSequence() {
-            document.getElementById('startBtn').classList.add('hidden');
-            const strip = document.getElementById('wheelStrip');
-            const alive = currentGame.players.map((_,i)=>i);
+            const screen = document.getElementById('resultScreen');
+            const icon = document.getElementById('resIcon');
+            const title = document.getElementById('resTitle');
+            const names = document.getElementById('resNames');
+            const prize = document.getElementById('resPrize');
 
-            for (let i=0; i<currentGame.outSequence.length; i++) {
-                const victim = currentGame.outSequence[i];
-                log("Rolling...");
-                
-                strip.innerHTML = ''; strip.style.transition='none'; strip.style.transform='translateX(0)';
-                // 造假条
-                for(let j=0; j<20; j++) {
-                    let pid = (j===15) ? victim : alive[Math.floor(Math.random()*alive.length)];
-                    let div = document.createElement('div'); div.className='wheel-item'; div.innerText = currentGame.players[pid];
-                    strip.appendChild(div);
-                }
-                await wait(50);
-                strip.style.transition='transform 2s';
-                strip.style.transform = `translateX(-${15*90 - 150}px)`;
-                await wait(2000);
-                sfx('kill');
-                alive.splice(alive.indexOf(victim), 1);
-                await wait(1000);
+            screen.style.display = 'flex';
+            prize.innerText = curGame.prize;
+
+            if (survivors.length === 0) {
+                icon.innerText = "💀";
+                title.innerText = "TOTAL WIPEOUT";
+                title.style.color = "#d32f2f";
+                names.innerText = "所有幸存者已被清除\n奖品将由全员瓜分";
+                names.style.color = "#888";
+            } else {
+                icon.innerText = "🏆";
+                title.innerText = `SURVIVORS (${survivors.length})`;
+                title.style.color = "#eebc51";
+                names.innerText = survivors.join(" & ");
+                names.style.color = "#fff";
             }
-            
-            document.getElementById('winScreen').style.display = 'flex';
-            document.getElementById('wName').innerText = currentGame.players[currentGame.winnerIdx];
         }
+
+        function log(t) { document.getElementById('console').innerText = t; }
 
     </script>
 </body>
