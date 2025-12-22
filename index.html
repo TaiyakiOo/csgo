@@ -3,196 +3,248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>哈基肉大逃杀 | 幸存者档案</title>
+    <title>CS:GO 猎杀档案</title>
     <script src="data.js"></script>
     <style>
-        /* --- 🌑 视觉风格 (保持不变) --- */
+        /* --- 🌑 赛博战术风格 (Tactical Dark) --- */
         :root {
-            --bg: #080808;
-            --card-bg: #111;
-            --gold: #eebc51;
-            --gold-dim: #8a6d2e;
-            --red: #d32f2f;
-            --red-glow: rgba(211, 47, 47, 0.4);
-            --text-main: #e0e0e0;
+            --bg: #050505;
+            --panel: #0e0e0e;
+            --border: #333;
+            --gold: #ffb700;
+            --cyan: #00f3ff; /* 科技蓝 */
+            --red: #ff2a2a;
+            --text-main: #d0d0d0;
+            --text-dim: #666;
+        }
+
+        @font-face {
+            font-family: 'TechMono';
+            src: local('Consolas'), local('Courier New'), monospace;
         }
 
         body {
             background-color: var(--bg);
+            /* 复杂的网格背景 */
             background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 20px 20px;
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
             color: var(--text-main);
-            font-family: 'Segoe UI', 'Roboto', monospace;
-            margin: 0; padding: 20px;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0; padding: 0;
             display: flex; flex-direction: column; align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .hero { text-align: center; margin-bottom: 30px; padding-top: 10px; }
+        /* --- CRT 扫描线滤镜 --- */
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none; z-index: 999;
+            opacity: 0.6;
+        }
+
+        /* --- 顶部 Hero --- */
+        .hero { 
+            width: 100%; padding: 30px 20px; text-align: center; 
+            background: linear-gradient(180deg, rgba(0,243,255,0.05) 0%, transparent 100%);
+            border-bottom: 1px solid #222; margin-bottom: 20px;
+        }
         h1 {
-            margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 2px;
-            text-transform: uppercase;
-            background: linear-gradient(180deg, #fff, #888);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin: 0; font-size: 24px; font-weight: 900; letter-spacing: 3px; color: #fff;
+            text-shadow: 0 0 10px rgba(0,243,255,0.3); text-transform: uppercase;
         }
         .subtitle { 
-            color: var(--gold); font-size: 10px; letter-spacing: 4px; 
-            margin-top: 8px; text-transform: uppercase; opacity: 0.8; 
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+            font-family: 'TechMono', monospace; font-size: 10px; color: var(--cyan); 
+            margin-top: 5px; opacity: 0.8; letter-spacing: 1px;
         }
-        .subtitle::before, .subtitle::after { content: ""; width: 30px; height: 1px; background: var(--gold-dim); }
 
-        .cta-btn {
-            background: rgba(238, 188, 81, 0.1); border: 1px solid var(--gold-dim);
-            color: var(--gold); text-decoration: none; padding: 10px 25px;
-            border-radius: 4px; font-size: 13px; font-weight: bold;
-            transition: 0.3s; display: inline-block; margin-bottom: 25px;
-        }
-        .cta-btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 15px var(--gold-dim); }
-
-        .history-list { width: 100%; max-width: 450px; padding-bottom: 80px; }
+        /* --- 列表区域 --- */
+        .list-container { width: 100%; max-width: 480px; padding: 0 20px 80px 20px; box-sizing: border-box;}
         
         .match-card {
-            background: var(--card-bg); border: 1px solid #222;
-            margin-bottom: 12px; padding: 15px; 
+            background: rgba(20, 20, 20, 0.8); 
+            border: 1px solid #222; border-left: 3px solid #444;
+            margin-bottom: 10px; padding: 15px; 
             display: flex; align-items: center; justify-content: space-between;
-            border-radius: 6px; cursor: pointer; position: relative; overflow: hidden;
-            transition: all 0.2s ease;
+            position: relative; cursor: pointer; backdrop-filter: blur(5px);
+            transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        .match-card:hover { transform: translateY(-2px); border-color: #444; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .card-left { display: flex; flex-direction: column; gap: 4px; }
-        .card-id { font-size: 14px; font-weight: bold; color: #fff; }
-        .card-prize { font-size: 11px; color: var(--gold-dim); }
-        .tag-mode { font-size: 9px; padding: 2px 6px; background: #1a1a1a; color: #666; border: 1px solid #333; }
+        .match-card:hover { 
+            transform: translateX(5px); border-color: var(--cyan); 
+            box-shadow: -5px 0 15px rgba(0,243,255,0.1); border-left-color: var(--cyan);
+        }
+        .match-card .info-top { font-size: 14px; color: #fff; font-weight: bold; margin-bottom: 4px; }
+        .match-card .info-sub { font-size: 11px; color: var(--text-dim); font-family: 'TechMono', monospace; }
+        .tag-hunter { 
+            font-size: 9px; padding: 2px 6px; background: rgba(255, 42, 42, 0.1); 
+            color: var(--red); border: 1px solid var(--red); border-radius: 2px;
+        }
+        .tag-classic { font-size: 9px; padding: 2px 6px; border: 1px solid #444; color: #666; }
 
-        /* 游戏弹窗 */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; flex-direction: column; align-items: center; justify-content: center; }
-        
-        .header-bar { 
-            width: 100%; max-width: 360px; display: flex; justify-content: space-between; 
-            padding-bottom: 10px; border-bottom: 1px solid #222; margin-bottom: 20px;
-            font-size: 12px; color: var(--gold); font-family: monospace;
+        /* --- 游戏终端弹窗 --- */
+        .modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #000; z-index: 100; flex-direction: column; align-items: center; justify-content: center; 
         }
 
-        .map-wrapper { 
+        /* HUD 头部 */
+        .hud-header {
+            width: 100%; max-width: 380px; margin-bottom: 20px; 
+            border: 1px solid #333; background: #080808; padding: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .hunter-badge {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 12px; color: var(--red); font-weight: bold; text-transform: uppercase;
+        }
+        .hunter-badge::before { content: "👹"; font-size: 16px; }
+        .game-id { font-family: 'TechMono', monospace; font-size: 10px; color: #555; }
+
+        /* 地图容器 */
+        .map-frame {
             position: relative; width: 340px; height: 340px; 
-            background: #0b0b0b; border: 1px solid #333; padding: 5px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.7); 
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+            border: 1px solid #333; padding: 5px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
         }
+        /* 角落装饰 */
+        .map-frame::before { content:""; position:absolute; top:-1px; left:-1px; width:10px; height:10px; border-top:2px solid var(--cyan); border-left:2px solid var(--cyan); }
+        .map-frame::after { content:""; position:absolute; bottom:-1px; right:-1px; width:10px; height:10px; border-bottom:2px solid var(--cyan); border-right:2px solid var(--cyan); }
 
         .map-grid {
             display: grid; grid-template-columns: repeat(3, 1fr);
-            width: 100%; height: 100%; gap: 4px;
+            width: 100%; height: 100%; gap: 2px;
         }
 
         .room-cell {
-            background: #141414; border: 1px solid #222;
+            background: #0e0e0e; border: 1px solid #1a1a1a;
             position: relative; display: flex; flex-wrap: wrap; 
             align-items: center; justify-content: center;
             transition: background 0.2s;
         }
-        .room-label { position: absolute; top: 2px; left: 3px; font-size: 8px; color: #333; }
+        .room-label { position: absolute; top: 2px; left: 3px; font-size: 7px; color: #333; font-family: 'TechMono'; }
         
-        .room-cell.purged { background: #300505 !important; border-color: #800; }
-        .room-cell.target { border-color: var(--red); box-shadow: inset 0 0 10px rgba(211, 47, 47, 0.2); }
+        .room-cell.purged { background: #1a0505 !important; border: 1px solid #500; box-shadow: inset 0 0 15px rgba(255,0,0,0.1); }
+        .room-cell.target { border-color: var(--red); box-shadow: inset 0 0 10px rgba(211, 47, 47, 0.4); }
 
+        /* 玩家头像 */
         .p-dot {
-            width: 26px; height: 26px; background: #222; color: #aaa;
+            width: 24px; height: 24px; background: #1a1a1a; color: #888;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 10px; font-weight: bold; margin: 2px; border: 1px solid #444;
+            font-size: 10px; font-weight: bold; margin: 2px; border: 1px solid #333;
             z-index: 10; transition: 0.3s;
         }
-        .p-dot.dead { background: #000; color: #333; border-color: #222; text-decoration: line-through; opacity: 0.6; transform: scale(0.8); }
+        .p-dot.dead { 
+            background: #050505; color: #333; border-color: #222; 
+            text-decoration: line-through; transform: scale(0.8); 
+        }
 
+        /* 屠夫 */
         .hunter {
-            position: absolute; width: 36px; height: 36px;
-            background: var(--red); border-radius: 50%;
+            position: absolute; width: 32px; height: 32px;
+            background: rgba(255, 42, 42, 0.9); 
+            border: 1px solid #fff; border-radius: 50%;
             box-shadow: 0 0 20px var(--red);
             display: flex; align-items: center; justify-content: center;
-            font-size: 20px; z-index: 99; color: #fff;
+            font-size: 18px; z-index: 99; color: #fff;
             transition: top 0.4s linear, left 0.4s linear; 
             pointer-events: none;
         }
 
+        /* 控制台与按钮 */
         .console { 
-            width: 340px; text-align: center; color: #444; font-family: monospace; 
-            font-size: 10px; margin-top: 15px; min-height: 15px; letter-spacing: 1px;
+            width: 340px; text-align: center; color: var(--cyan); font-family: 'TechMono', monospace; 
+            font-size: 10px; margin-top: 15px; min-height: 15px; text-shadow: 0 0 5px rgba(0,243,255,0.5);
         }
         
         .start-btn {
-            margin-top: 25px; background: var(--red); color: #fff; border: none;
-            padding: 12px 50px; font-weight: bold; font-size: 14px; letter-spacing: 2px; cursor: pointer;
-            box-shadow: 0 0 20px var(--red-glow); 
-            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-            transition: 0.2s;
+            margin-top: 25px; background: transparent; color: var(--red); 
+            border: 1px solid var(--red);
+            padding: 10px 40px; font-weight: bold; font-family: 'TechMono'; letter-spacing: 2px; 
+            cursor: pointer; transition: 0.2s;
         }
-        .start-btn:active { transform: scale(0.96); }
+        .start-btn:hover { background: var(--red); color: #000; box-shadow: 0 0 20px var(--red-glow); }
         .start-btn.hide { display: none; }
 
-        /* 结算层 */
+        /* 结算弹窗 */
         .result-overlay { 
             display: none; position: absolute; top:0; left:0; width:100%; height:100%; 
-            background: rgba(0,0,0,0.95); flex-direction: column; align-items: center; justify-content: center; 
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(5px);
+            flex-direction: column; align-items: center; justify-content: center; 
             z-index: 200; animation: fadein 0.5s;
         }
+        
+        .res-card {
+            width: 80%; max-width: 300px; padding: 30px;
+            background: #0e0e0e; border: 1px solid #333; text-align: center;
+            box-shadow: 0 0 50px rgba(238, 188, 81, 0.1); position: relative;
+        }
+        .res-card::before { content:""; position:absolute; top:0; left:0; width:100%; height:2px; background: var(--gold); }
+
+        .res-list { color: #fff; font-size: 14px; margin: 15px 0; line-height: 1.6; }
+        .res-hunter { color: var(--red); font-weight: bold; font-size: 16px; margin-bottom: 5px; display:block;}
+        .res-label { font-size: 9px; color: #555; letter-spacing: 1px; margin-top: 15px; text-transform: uppercase; }
+
         @keyframes fadein { from{opacity:0} to{opacity:1} }
     </style>
 </head>
 <body>
+    
+    <div class="scanlines"></div>
 
     <div class="hero">
-        <h1>CS:GO BATTLE ROYALE</h1>
-        <div class="subtitle">9房选2 · 绝境求生</div>
+        <h1>PROJECT: HUNTER</h1>
+        <div class="subtitle">ASYMMETRIC SURVIVAL PROTOCOL</div>
     </div>
 
-    <a href="https://casego.cn/home?Code=HSR91" target="_blank" class="cta-btn">
-        🎟️ 前往 Casego 参与
-    </a>
+    <div class="list-container" id="listArea"></div>
 
-    <div class="history-list" id="listArea"></div>
-
+    <!-- 游戏弹窗 -->
     <div class="modal" id="gameModal">
-        <div class="header-bar">
-            <div id="gid">ID: --</div>
-            <div id="status">SYSTEM READY</div>
+        <div class="hud-header">
+            <div class="hunter-badge" id="hudHunter">HUNTER: ???</div>
+            <div class="game-id" id="hudId">ID: --</div>
         </div>
 
-        <div class="map-wrapper">
+        <div class="map-frame">
             <div class="map-grid" id="grid"></div>
-            <div class="hunter" id="hunter" style="display:none">👹</div>
+            <div class="hunter" id="hunter" style="display:none">☠️</div>
         </div>
 
-        <div class="console" id="console">WAITING FOR AUTHORIZATION...</div>
+        <div class="console" id="console">SYSTEM ONLINE. WAITING FOR INPUT.</div>
 
-        <button class="start-btn" id="btnStart" onclick="runSequence()">INITIATE</button>
-        <button onclick="closeGame()" style="margin-top:20px;background:none;border:none;color:#333;cursor:pointer;font-size:10px">ABORT</button>
+        <button class="start-btn" id="btnStart" onclick="runSequence()">EXECUTE</button>
+        <button onclick="closeGame()" style="margin-top:20px;background:none;border:none;color:#333;cursor:pointer;font-family:'TechMono';font-size:10px">TERMINATE SESSION</button>
 
         <div class="result-overlay" id="resultScreen">
-            <div style="font-size:50px; margin-bottom:15px" id="resIcon">🏆</div>
-            <div style="color:var(--gold); font-size:18px; font-weight:bold; letter-spacing:2px" id="resTitle">SURVIVORS</div>
-            <div style="color:#ccc; font-size:14px; margin-top:10px; text-align:center; line-height:1.6" id="resNames"></div>
-            <div style="color:#555; font-size:10px; margin-top:20px; border-top:1px solid #333; padding-top:10px">REWARD</div>
-            <div style="color:#888; font-size:12px; margin-top:2px" id="resPrize"></div>
-            <button onclick="closeGame()" style="margin-top:30px; border:1px solid #333; background:none; color:#666; padding:8px 30px; border-radius:50px; cursor:pointer">CLOSE</button>
+            <div class="res-card">
+                <div style="font-size:40px; margin-bottom:10px">🏆</div>
+                <div style="color:var(--gold); font-size:12px; letter-spacing:2px; font-weight:bold">WINNERS</div>
+                
+                <div class="res-list">
+                    <span id="resHunter" class="res-hunter"></span>
+                    <span id="resSurvivors"></span>
+                </div>
+
+                <div class="res-label">REWARD POOL</div>
+                <div style="color:#888; font-size:11px; margin-top:2px" id="resPrize"></div>
+
+                <button onclick="closeGame()" style="margin-top:25px; border:1px solid #333; background:transparent; color:#666; padding:8px 30px; cursor:pointer; font-family:'TechMono'; font-size:10px;">DISMISS</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- 修复版音效引擎 (防卡死) ---
+        // 音效系统
         let audioCtx = null;
         function initAudio() {
-            if (!audioCtx) {
-                try {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                } catch(e) {
-                    console.log("Audio init failed, muted.");
-                }
-            }
-            if (audioCtx && audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){} }
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
         }
 
         function playSfx(k) {
@@ -201,20 +253,18 @@
                 const t=audioCtx.currentTime, o=audioCtx.createOscillator(), g=audioCtx.createGain();
                 o.connect(g); g.connect(audioCtx.destination);
                 if(k==='step'){
-                    o.frequency.setValueAtTime(80,t); o.frequency.exponentialRampToValueAtTime(40,t+0.1);
+                    o.frequency.setValueAtTime(60,t); o.frequency.exponentialRampToValueAtTime(30,t+0.1);
                     g.gain.setValueAtTime(0.05,t); g.gain.linearRampToValueAtTime(0,t+0.1);
                     o.start(t); o.stop(t+0.1);
                 } else if(k==='purge'){
-                    o.type='sawtooth'; o.frequency.setValueAtTime(120,t); o.frequency.exponentialRampToValueAtTime(10,t+0.4);
-                    g.gain.setValueAtTime(0.2,t); g.gain.exponentialRampToValueAtTime(0,t+0.4);
-                    o.start(t); o.stop(t+0.4);
+                    o.type='sawtooth'; o.frequency.setValueAtTime(100,t); o.frequency.exponentialRampToValueAtTime(10,t+0.5);
+                    g.gain.setValueAtTime(0.15,t); g.gain.exponentialRampToValueAtTime(0,t+0.5);
+                    o.start(t); o.stop(t+0.5);
                 } else if(k==='win'){
-                    o.type='sine'; o.frequency.setValueAtTime(440,t); g.gain.setValueAtTime(0.2,t); g.gain.exponentialRampToValueAtTime(0,t+2);
-                    o.start(t); o.stop(t+2);
+                    o.type='triangle'; o.frequency.setValueAtTime(400,t); g.gain.setValueAtTime(0.1,t); g.gain.exponentialRampToValueAtTime(0,t+1.5);
+                    o.start(t); o.stop(t+1.5);
                 }
-            } catch(e) {
-                console.warn("Audio Error:", e); // 防止音效报错卡住主线程
-            }
+            } catch(e){}
         }
         function wait(ms){return new Promise(r=>setTimeout(r,ms))}
         function log(t) { document.getElementById('console').innerText = t; }
@@ -229,24 +279,36 @@
                 const d = document.createElement('div');
                 d.className = 'match-card';
                 d.onclick = () => loadGame(g);
+                
+                let tagClass = 'tag-classic';
+                let tagText = 'CLASSIC';
+                if (g.type === 'map_hunter') { tagClass = 'tag-hunter'; tagText = 'HUNTER MODE'; }
+                else if (g.type === 'map_zone') { tagClass = 'tag-classic'; tagText = 'ZONE'; }
+
                 d.innerHTML = `
                     <div class="card-left">
-                        <div class="card-id">${g.id}</div>
-                        <div class="card-prize">📦 ${g.prize}</div>
+                        <div class="info-top">${g.id}</div>
+                        <div class="info-sub">📦 ${g.prize}</div>
                     </div>
-                    <div class="card-right"><span class="tag-mode">${g.type==='map_zone'?'ZONE':'CLASSIC'}</span></div>
+                    <div class="card-right">
+                        <span class="${tagClass}">${tagText}</span>
+                    </div>
                 `;
                 listArea.appendChild(d);
             });
         }
 
         function loadGame(g) {
-            if(g.type !== 'map_zone') { alert("Please recreate data with Admin Tool"); return; }
+            // 兼容旧的 map_zone
+            if(g.type !== 'map_hunter' && g.type !== 'map_zone') { alert("Legacy data not supported"); return; }
             curGame = g;
+            
             document.getElementById('gameModal').style.display = 'flex';
             document.getElementById('resultScreen').style.display = 'none';
-            document.getElementById('gid').innerText = g.id;
-            document.getElementById('status').innerText = "SYSTEM STANDBY";
+            document.getElementById('hudId').innerText = "ID: " + g.id.split('-')[0]; // 简短ID
+            document.getElementById('hudHunter').innerText = "HUNTER: " + (g.hunter || "AI SYSTEM");
+            
+            document.getElementById('console').innerText = "CONNECTION ESTABLISHED";
             document.getElementById('btnStart').classList.remove('hide');
             initGrid(g);
         }
@@ -270,26 +332,21 @@
                 dot.id = `p-${idx}`;
                 dot.innerText = name[0];
                 dot.title = name;
-                const roomEl = document.getElementById(`room-${r}`);
-                if(roomEl) roomEl.appendChild(dot);
+                document.getElementById(`room-${r}`).appendChild(dot);
             });
             hunterPos = 4;
             document.getElementById('hunter').style.display = 'none'; 
         }
 
         async function runSequence() {
-            // 初始化音频 (必须在点击事件内)
             initAudio();
-
-            // 防崩溃包裹
             try {
                 document.getElementById('btnStart').classList.add('hide');
-                document.getElementById('status').innerText = "PURGE SEQUENCE ACTIVE";
+                log("SEQUENCE INITIATED...");
                 
                 const h = document.getElementById('hunter');
-                updateHunterPos(4); // 初始位置
+                updateHunterPos(4);
                 h.style.display = 'flex';
-                log("HUNTER DEPLOYED");
                 await wait(1000);
 
                 const seq = curGame.huntSequence || [];
@@ -297,74 +354,56 @@
 
                 for (let i = 0; i < seq.length; i++) {
                     const targetRoom = seq[i];
-                    if(targetRoom === undefined) continue;
-
-                    log(`TARGETING SECTOR ${targetRoom+1}...`);
+                    log(`PURGING SECTOR ${targetRoom+1}...`);
                     
-                    // 寻路移动
                     await moveHunterPath(targetRoom);
 
-                    // 清洗房间
                     playSfx('purge');
                     const roomEl = document.getElementById(`room-${targetRoom}`);
-                    if(roomEl) roomEl.classList.add('purged');
+                    roomEl.classList.add('purged');
                     
-                    if(navigator.vibrate) navigator.vibrate(200);
+                    if(navigator.vibrate) navigator.vibrate(100);
 
-                    // 判定死亡
-                    let casualties = false;
+                    let kill = false;
                     curGame.players.forEach((n, idx) => {
                         if (curGame.rooms[idx] === targetRoom && localAlive[idx]) {
                             localAlive[idx] = false;
                             const pDot = document.getElementById(`p-${idx}`);
                             if(pDot) pDot.classList.add('dead');
-                            casualties = true;
+                            kill = true;
                         }
                     });
-
-                    if(casualties) log(`CASUALTIES IN SECTOR ${targetRoom+1}`);
-                    else log(`SECTOR ${targetRoom+1} CLEARED`);
 
                     await wait(600);
                 }
 
+                log("SEQUENCE COMPLETE");
+                await wait(500);
                 finishGame(localAlive);
 
-            } catch (err) {
-                console.error(err);
-                log("SYSTEM ERROR: " + err.message);
-                alert("运行出错，请检查 data.js 数据是否正确");
-            }
+            } catch (err) { console.error(err); }
         }
 
-        // 简单的 BFS 寻路
+        // BFS 寻路
         function getPath(start, end) {
             if(start===end) return [start];
             const adj = [[1,3],[0,2,4],[1,5],[0,4,6],[1,3,5,7],[2,4,8],[3,7],[4,6,8],[5,7]];
             let q = [[start]], v = new Set([start]);
             while(q.length){
-                let path = q.shift();
-                let last = path[path.length-1];
-                if(last === end) return path;
-                
-                // 安全检查
-                if(!adj[last]) return [end]; 
-
-                for(let n of adj[last]){
-                    if(!v.has(n)){ v.add(n); q.push([...path, n]); }
-                }
+                let p = q.shift(), l = p[p.length-1];
+                if(l === end) return p;
+                if(adj[l]) for(let n of adj[l]) if(!v.has(n)){ v.add(n); q.push([...p, n]); }
             }
             return [end];
         }
 
         async function moveHunterPath(target) {
             const path = getPath(hunterPos, target);
-            if(path.length < 2) return; // 已经在原地
-
+            if(path.length < 2) return; 
             for(let i=1; i<path.length; i++){
                 playSfx('step');
                 updateHunterPos(path[i]);
-                await wait(300);
+                await wait(250);
             }
         }
 
@@ -372,11 +411,9 @@
             hunterPos = idx;
             const h = document.getElementById('hunter');
             const r = document.getElementById(`room-${idx}`);
-            if(!r) return;
-            
-            // 使用 CSS Transform 移动可能比 left/top 更平滑，但这里保持原逻辑
-            const left = r.offsetLeft + r.offsetWidth/2 - 18;
-            const top = r.offsetTop + r.offsetHeight/2 - 18;
+            // 计算中心
+            const left = r.offsetLeft + r.offsetWidth/2 - 16;
+            const top = r.offsetTop + r.offsetHeight/2 - 16;
             h.style.left = left + 'px';
             h.style.top = top + 'px';
             
@@ -387,32 +424,24 @@
         function finishGame(aliveState) {
             playSfx('win');
             const survivors = [];
-            curGame.players.forEach((n, i) => {
-                if(aliveState[i]) survivors.push(n);
-            });
+            curGame.players.forEach((n, i) => { if(aliveState[i]) survivors.push(n); });
 
             const screen = document.getElementById('resultScreen');
-            const icon = document.getElementById('resIcon');
-            const title = document.getElementById('resTitle');
-            const names = document.getElementById('resNames');
-            const prize = document.getElementById('resPrize');
-
-            screen.style.display = 'flex';
-            prize.innerText = curGame.prize;
+            document.getElementById('resPrize').innerText = curGame.prize;
+            
+            // 设置赢家：追猎者 + 幸存者
+            const hunterName = curGame.hunter || "System";
+            document.getElementById('resHunter').innerText = "👹 " + hunterName;
 
             if (survivors.length === 0) {
-                icon.innerText = "💀";
-                title.innerText = "TOTAL WIPEOUT";
-                title.style.color = "#d32f2f";
-                names.innerText = "所有幸存者已被清除\n奖品将由全员瓜分";
-                names.style.color = "#888";
+                document.getElementById('resSurvivors').innerText = "(No Survivors)";
+                document.getElementById('resSurvivors').style.color = "#666";
             } else {
-                icon.innerText = "🏆";
-                title.innerText = `SURVIVORS (${survivors.length})`;
-                title.style.color = "#eebc51";
-                names.innerText = survivors.join(" & ");
-                names.style.color = "#fff";
+                document.getElementById('resSurvivors').innerText = "+ " + survivors.join(" & ");
+                document.getElementById('resSurvivors').style.color = "#fff";
             }
+
+            screen.style.display = 'flex';
         }
     </script>
 </body>
