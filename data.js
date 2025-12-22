@@ -8,7 +8,7 @@ const gameHistory = [
     { 
         id: "第000期-无差别清洗演示", 
         type: "map_zone", 
-        prize: "M4A1-S | 二西莫夫 (久经沙场)", 
+        prize: "M4A4 | 二西莫夫 (久经沙场)", 
         players: ["A", "B", "C", "D", "E"], 
         rooms: [0, 4, 8, 0, 2], // 玩家分布
         huntSequence: [1, 3, 5, 7, 8, 2, 6], // 屠夫依次清洗这7个房间 (注意：虽然4号房和0号房没人被点到，但他们安全吗？不，只要不在序列里就安全)
@@ -19,3 +19,4 @@ const gameHistory = [
     // ⬇️ 粘贴你的 Admin 代码 ⬇️
     
 ];
+
